@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class PredioDomoney extends StatefulWidget {
-  const PredioDomoney({super.key});
+  final VoidCallback? onTap; // Callback para manipular toques
+
+  const PredioDomoney({super.key, this.onTap});
 
   @override
   _PredioDomoneyState createState() => _PredioDomoneyState();
@@ -9,46 +11,17 @@ class PredioDomoney extends StatefulWidget {
 
 class _PredioDomoneyState extends State<PredioDomoney>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
-
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.05).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _onTapBuilding() {
-    _controller.forward().then((_) => _controller.reverse());
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: _onTapBuilding,
-      child: ScaleTransition(
-        scale: _scaleAnimation,
-        child: const Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Roof(), // Teto do prédio
-            BuildingStructure(), // Corpo do prédio
-            DoorFloor(), // Porta
-          ],
-        ),
+      onTap: widget.onTap, // Executa o callback passado pelo widget pai
+      child: const Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Roof(), // Teto do prédio
+          BuildingStructure(), // Corpo do prédio
+          DoorFloor(), // Porta
+        ],
       ),
     );
   }
@@ -702,6 +675,29 @@ class CEOFloor extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class CustomPageRoute extends PageRouteBuilder {
+  final Widget child;
+  final Animation<double> transitionAnimation;
+
+  CustomPageRoute({required this.child, required this.transitionAnimation})
+      : super(
+          pageBuilder: (context, animation, secondaryAnimation) => child,
+          transitionDuration: const Duration(milliseconds: 800),
+        );
+
+  @override
+  Widget buildTransitions(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) {
+    return FadeTransition(
+      opacity: transitionAnimation,
+      child: ScaleTransition(
+        scale: Tween<double>(begin: 1.0, end: 1.3).animate(animation),
+        child: child,
       ),
     );
   }

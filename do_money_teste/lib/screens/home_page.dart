@@ -1,3 +1,4 @@
+import 'package:do_money_teste/screens/domoney_simulation.dart';
 import 'package:flutter/material.dart';
 import 'package:do_money_teste/screens/subscreens/predio_domoney.dart';
 import 'package:do_money_teste/screens/carteira_digital.dart';
@@ -194,7 +195,16 @@ class _HomePageContent extends StatelessWidget {
             // Prédio central
             Positioned(
               top: screenHeight * 0.07,
-              child: const PredioDomoney(),
+              child: PredioDomoney(
+                onTap: () {
+                  // Garantir que o Navigator utilize o contexto correto
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const DoMoneySimulation(),
+                    ),
+                  );
+                },
+              ),
             ),
             // Barra de progresso
             Positioned(
@@ -286,7 +296,7 @@ class ProgressIndicator extends StatelessWidget {
               height: 16,
               decoration: BoxDecoration(
                 color: Colors.grey[300], // Fundo da barra
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(4),
               ),
             ),
             // Barra de progresso preenchida
@@ -299,7 +309,7 @@ class ProgressIndicator extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.orange,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(4),
                   ),
                 ),
               ),
@@ -320,7 +330,6 @@ class ProgressIndicator extends StatelessWidget {
 }
 
 // Fundo dinâmico com prédios
-
 class DynamicBackground extends StatefulWidget {
   const DynamicBackground(
       {super.key,
