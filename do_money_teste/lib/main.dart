@@ -1,6 +1,6 @@
-import 'package:do_money_teste/screens/artigos.dart';
-import 'package:do_money_teste/screens/carteira_digital.dart';
-import 'package:do_money_teste/screens/ranking.dart';
+import 'screens/artigos.dart';
+import 'screens/carteira_digital.dart';
+import 'screens/ranking.dart';
 
 import 'screens/home_page.dart';
 import 'screens/perfil.dart';

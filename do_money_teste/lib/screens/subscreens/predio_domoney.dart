@@ -41,13 +41,12 @@ class _PredioDomoneyState extends State<PredioDomoney>
       onTap: _onTapBuilding,
       child: ScaleTransition(
         scale: _scaleAnimation,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: const Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            const OutdoorBanner(), // Outdoor com o nome
-            const Roof(), // Teto do prédio
-            const BuildingStructure(), // Corpo do prédio com janelas e refletores
-            const DoorFloor(), // Porta futurista
+            Roof(), // Teto do prédio
+            BuildingStructure(), // Corpo do prédio
+            DoorFloor(), // Porta
           ],
         ),
       ),
@@ -55,63 +54,25 @@ class _PredioDomoneyState extends State<PredioDomoney>
   }
 }
 
-// Outdoor centralizado no topo do prédio
-class OutdoorBanner extends StatelessWidget {
-  const OutdoorBanner({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 180,
-      height: 30,
-      decoration: BoxDecoration(
-        color: Colors.grey[900],
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.4),
-            offset: const Offset(0, 4),
-            blurRadius: 6,
-          ),
-        ],
-      ),
-      alignment: Alignment.center,
-      child: const Text(
-        'DoMoney Enterprises',
-        style: TextStyle(
-          color: Colors.cyanAccent,
-          fontSize: 14,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 1.2,
-        ),
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-}
-
-// Teto triangular com efeitos de sombra e gradiente para destacar
+// Teto
 class Roof extends StatelessWidget {
   const Roof({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 167,
-      height: 40,
+      width: 165, // Mesma largura que o prédio
+      height: 40, // Altura proporcional
       child: ClipPath(
         clipper: TriangleClipper(),
         child: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.grey[800]!, Colors.grey[700]!],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
+            color: Colors.grey[700], // Cor sólida
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                offset: const Offset(0, 5),
+                color: Colors.black.withOpacity(0.4),
+                offset:
+                    const Offset(0, 3), // Reduzir sombra para evitar espaços
                 blurRadius: 6,
               ),
             ],
@@ -122,17 +83,16 @@ class Roof extends StatelessWidget {
   }
 }
 
-// Corpo do prédio com janelas e refletores
+// Corpo do prédio
 class BuildingStructure extends StatelessWidget {
   const BuildingStructure({super.key});
 
-  Widget _buildBuildingFloor(double largura, bool isCurrentLevel) {
+  Widget _buildBuildingFloor(double largura, bool isLargeFloor) {
     return Container(
       width: largura,
-      height: 65,
-      margin: const EdgeInsets.symmetric(vertical: 1),
+      height: isLargeFloor ? 80 : 61, // Altura maior para o andar intermediário
       decoration: BoxDecoration(
-        color: isCurrentLevel ? Colors.yellow[200] : Colors.grey[400],
+        color: Colors.grey[500],
         border: Border.all(color: Colors.black, width: 0.5),
         boxShadow: [
           BoxShadow(
@@ -140,82 +100,84 @@ class BuildingStructure extends StatelessWidget {
             offset: const Offset(2, 2),
             blurRadius: 4,
           ),
-          if (isCurrentLevel)
-            BoxShadow(
-              color: Colors.yellow.withOpacity(0.5),
-              offset: const Offset(0, -5),
-              blurRadius: 10,
-              spreadRadius: 3,
-            ),
         ],
       ),
       child: Stack(
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(4, (index) => DynamicWindow()),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(4, (index) => DynamicWindow()),
-              ),
-            ],
+          // Linhas horizontais decorativas no andar
+          Positioned(
+            top: 10,
+            left: 5,
+            right: 5,
+            child: Container(
+              height: 2,
+              color: Colors.black.withOpacity(0.2),
+            ),
           ),
           Positioned(
-            left: -15,
-            top: 10,
-            child: _buildRotatingSpotlight(),
+            bottom: 10,
+            left: 5,
+            right: 5,
+            child: Container(
+              height: 2,
+              color: Colors.black.withOpacity(0.2),
+            ),
+          ),
+          // Janelas
+          Positioned.fill(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: List.generate(
+                      isLargeFloor ? 4 : 4,
+                      (index) => isLargeFloor
+                          ? const LargeDynamicWindow()
+                          : const DynamicWindow(),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: List.generate(
+                      isLargeFloor ? 4 : 4,
+                      (index) => isLargeFloor
+                          ? const LargeDynamicWindow()
+                          : const DynamicWindow(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          // Detalhes laterais (ornamentos)
+          Positioned(
+            left: -5,
+            top: 0,
+            bottom: 0,
+            child: Container(
+              width: 10,
+              decoration: BoxDecoration(
+                color: Colors.grey[500],
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(color: Colors.black, width: 0.5),
+              ),
+            ),
           ),
           Positioned(
-            right: -15,
-            top: 10,
-            child: _buildRotatingSpotlight(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Janela com estilo neon mais suave
-  Widget _buildNeonWindow(double largura, double altura) {
-    return Container(
-      width: largura,
-      height: altura,
-      margin: const EdgeInsets.symmetric(horizontal: 2),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Colors.cyanAccent, Colors.blueAccent],
-        ),
-        borderRadius: BorderRadius.circular(4),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.cyanAccent.withOpacity(0.2),
-            blurRadius: 4,
-            spreadRadius: 1,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Refletor que simula um movimento leve de rotação
-  Widget _buildRotatingSpotlight() {
-    return Container(
-      width: 15,
-      height: 35,
-      decoration: BoxDecoration(
-        color: Colors.blueAccent,
-        borderRadius: BorderRadius.circular(4),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.blueAccent.withOpacity(0.3),
-            blurRadius: 20,
-            spreadRadius: 10,
-            offset: const Offset(0, 3),
+            right: -5,
+            top: 0,
+            bottom: 0,
+            child: Container(
+              width: 10,
+              decoration: BoxDecoration(
+                color: Colors.grey[500],
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(color: Colors.black, width: 0.5),
+              ),
+            ),
           ),
         ],
       ),
@@ -227,14 +189,14 @@ class BuildingStructure extends StatelessWidget {
     return Column(
       children: [
         _buildBuildingFloor(165, false),
-        _buildRoundedContainer(170),
+        _buildRoundedContainer(175),
         _buildBuildingFloor(165, false),
-        _buildRoundedContainer(187),
-        _buildBuildingFloor(165, true), // Andar destacado
-        _buildRoundedContainer(170),
+        _buildRoundedContainer(175),
         _buildBuildingFloor(165, false),
-        _buildRoundedContainer(187),
-        _buildBuildingFloor(190, false),
+        _buildRoundedContainer(175),
+        _buildBuildingFloor(165, false),
+        _buildRoundedContainer(180),
+        _buildBuildingFloor(190, true),
         _buildRoundedContainer(203),
       ],
     );
@@ -243,10 +205,14 @@ class BuildingStructure extends StatelessWidget {
   Widget _buildRoundedContainer(double largura) {
     return Container(
       width: largura,
-      height: 8,
+      height: 10,
       decoration: BoxDecoration(
-        color: Colors.grey[600],
+        color: Colors.grey[400],
         borderRadius: BorderRadius.circular(6),
+        border: Border.all(
+          color: Colors.black,
+          width: 0.4,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
@@ -255,12 +221,34 @@ class BuildingStructure extends StatelessWidget {
           ),
         ],
       ),
+      child: Stack(
+        children: [
+          // Linhas decorativas horizontais
+          Positioned(
+            top: 3,
+            left: 5,
+            right: 5,
+            child: Container(
+              height: 2,
+              color: Colors.black.withOpacity(0.1),
+            ),
+          ),
+          Positioned(
+            bottom: 3,
+            left: 5,
+            right: 5,
+            child: Container(
+              height: 2,
+              color: Colors.black.withOpacity(0.1),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-// Andar com a porta futurista
-
+// Andar da porta
 class DoorFloor extends StatelessWidget {
   const DoorFloor({super.key});
 
@@ -270,9 +258,11 @@ class DoorFloor extends StatelessWidget {
       width: 200,
       height: 70,
       decoration: BoxDecoration(
-        color: Colors.grey[600], // Tom mais escuro
+        color: Colors.grey[500], // Tom sólido
         border: Border.all(
-            color: Colors.black, width: 0.5), // Mesma borda dos outros andares
+          color: Colors.black,
+          width: 0.8,
+        ), // Borda rústica
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.15),
@@ -281,131 +271,98 @@ class DoorFloor extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      child: Stack(
         children: [
-          Row(
-            children: List.generate(
-                4,
-                (index) =>
-                    _buildVerticalDetail()), // Detalhes laterais à esquerda
+          // Linhas horizontais decorativas
+          Positioned(
+            top: 10,
+            left: 5,
+            right: 5,
+            child: Container(
+              height: 2,
+              color: Colors.black.withOpacity(0.3),
+            ),
           ),
-          AnimatedDoor(), // Porta central
-          Row(
-            children: List.generate(
-                4,
-                (index) =>
-                    _buildVerticalDetail()), // Detalhes laterais à direita
+          Positioned(
+            bottom: 10,
+            left: 5,
+            right: 5,
+            child: Container(
+              height: 2,
+              color: Colors.black.withOpacity(0.3),
+            ),
+          ),
+          // Detalhes verticais rústicos (laterais)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(
+                3,
+                (index) => Container(
+                  width: 8,
+                  height: 15,
+                  margin: const EdgeInsets.symmetric(vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[400],
+                    border: Border.all(color: Colors.black, width: 0.5),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(
+                3,
+                (index) => Container(
+                  width: 8,
+                  height: 15,
+                  margin: const EdgeInsets.symmetric(vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[400],
+                    border: Border.all(color: Colors.black, width: 0.5),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+              top: 10,
+              bottom: 10,
+              left: 20,
+              right: 160,
+              child: _buildVerticalDetail()),
+          Positioned(
+              top: 10,
+              bottom: 10,
+              left: 40,
+              right: 140,
+              child: _buildVerticalDetail()),
+          Positioned(
+              top: 10,
+              bottom: 10,
+              left: 160,
+              right: 20,
+              child: _buildVerticalDetail()),
+          Positioned(
+              top: 10,
+              bottom: 10,
+              left: 140,
+              right: 40,
+              child: _buildVerticalDetail()),
+          // Porta
+          Positioned(
+            top: 10,
+            bottom: 10,
+            left: 80,
+            right: 80,
+            child: AnimatedDoor(),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildDoor() {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        // Moldura externa da porta, levemente mais escura
-        Container(
-          width: 60,
-          height: 65,
-          decoration: BoxDecoration(
-            color: Colors.grey[700], // Tom mais escuro para a moldura
-            border: Border.all(color: Colors.black, width: 1),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                offset: const Offset(0, 4),
-                blurRadius: 6,
-              ),
-            ],
-          ),
-        ),
-        // Barra luminosa no topo da porta
-        Positioned(
-          top: 6,
-          child: Container(
-            width: 30,
-            height: 4,
-            decoration: BoxDecoration(
-              color: Colors.cyanAccent,
-              borderRadius: BorderRadius.circular(2),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.cyanAccent.withOpacity(0.5),
-                  blurRadius: 6,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-          ),
-        ),
-        // Portas laterais (direita e esquerda)
-        Positioned(
-          left: 4,
-          child: Container(
-            width: 20,
-            height: 55,
-            decoration: BoxDecoration(
-              color: Colors.grey[400],
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(3),
-                bottomLeft: Radius.circular(3),
-              ),
-              border: Border.all(color: Colors.black, width: 0.5),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  offset: const Offset(-2, 4),
-                  blurRadius: 4,
-                ),
-              ],
-            ),
-          ),
-        ),
-        Positioned(
-          right: 4,
-          child: Container(
-            width: 20,
-            height: 55,
-            decoration: BoxDecoration(
-              color: Colors.grey[400],
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(3),
-                bottomRight: Radius.circular(3),
-              ),
-              border: Border.all(color: Colors.black, width: 0.5),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  offset: const Offset(2, 4),
-                  blurRadius: 4,
-                ),
-              ],
-            ),
-          ),
-        ),
-        // Indicador vermelho na parte inferior
-        Positioned(
-          bottom: 6,
-          child: Container(
-            width: 20,
-            height: 4,
-            decoration: BoxDecoration(
-              color: Colors.redAccent,
-              borderRadius: BorderRadius.circular(2),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.redAccent.withOpacity(0.4),
-                  blurRadius: 4,
-                  spreadRadius: 1,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
@@ -417,7 +374,7 @@ Widget _buildVerticalDetail() {
     height: 50,
     margin: const EdgeInsets.symmetric(horizontal: 3),
     decoration: BoxDecoration(
-      color: Colors.grey[500], // Um tom intermediário
+      color: Colors.grey[400],
       border: Border.all(color: Colors.black, width: 0.5), // Borda preta
       boxShadow: [
         BoxShadow(
@@ -427,9 +384,44 @@ Widget _buildVerticalDetail() {
         ),
       ],
     ),
+    child: Stack(
+      children: [
+        // Linha horizontal decorativa superior
+        Positioned(
+          top: 8,
+          left: 2,
+          right: 2,
+          child: Container(
+            height: 2,
+            color: Colors.black.withOpacity(0.3),
+          ),
+        ),
+        // Linha horizontal decorativa central
+        Positioned(
+          top: 23,
+          left: 2,
+          right: 2,
+          child: Container(
+            height: 2,
+            color: Colors.black.withOpacity(0.3),
+          ),
+        ),
+        // Linha horizontal decorativa inferior
+        Positioned(
+          bottom: 8,
+          left: 2,
+          right: 2,
+          child: Container(
+            height: 2,
+            color: Colors.black.withOpacity(0.3),
+          ),
+        ),
+      ],
+    ),
   );
 }
 
+// Porta animada
 class AnimatedDoor extends StatefulWidget {
   const AnimatedDoor({super.key});
 
@@ -492,11 +484,11 @@ class _AnimatedDoorState extends State<AnimatedDoor>
                 return Transform.translate(
                   offset: Offset(_leftDoorAnimation.value, 0),
                   child: Container(
-                    width: 40, // Mesma largura para ambas as portas
+                    width: 20, // Mesma largura para ambas as portas
                     height: 70,
                     decoration: BoxDecoration(
-                      color: Colors.grey[400],
-                      border: Border.all(color: Colors.black, width: 0.5),
+                      color: Colors.grey[300],
+                      border: Border.all(color: Colors.black, width: 0.9),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.2),
@@ -516,11 +508,11 @@ class _AnimatedDoorState extends State<AnimatedDoor>
                 return Transform.translate(
                   offset: Offset(_rightDoorAnimation.value, 0),
                   child: Container(
-                    width: 40, // Mesma largura para ambas as portas
+                    width: 20, // Mesma largura para ambas as portas
                     height: 70,
                     decoration: BoxDecoration(
-                      color: Colors.grey[400],
-                      border: Border.all(color: Colors.black, width: 0.5),
+                      color: Colors.grey[300],
+                      border: Border.all(color: Colors.black, width: 0.9),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.2),
@@ -540,62 +532,60 @@ class _AnimatedDoorState extends State<AnimatedDoor>
   }
 }
 
-// Clipper para o teto triangular
+// Teto
 class TriangleClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
-    path.moveTo(size.width / 2, 0);
+
+    // Base reta
+    path.moveTo(0, size.height);
+
+    // Degraus inclinados à esquerda
+    path.lineTo(size.width * 0.15, size.height * 0.5);
+    path.lineTo(size.width * 0.3, size.height * 0.3);
+
+    // Ponto superior central
+    path.lineTo(size.width * 0.5, 0);
+
+    // Degraus inclinados à direita
+    path.lineTo(size.width * 0.7, size.height * 0.3);
+    path.lineTo(size.width * 0.85, size.height * 0.5);
+
+    // Base reta à direita
     path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
+
+    // Fecha o caminho
     path.close();
+
     return path;
   }
 
   @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    return false;
-  }
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
 
-class DynamicWindow extends StatefulWidget {
-  const DynamicWindow({super.key});
+// Janela dinâmica
+class DynamicWindow extends StatelessWidget {
+  final double width;
+  final double height;
+  final EdgeInsets? margin;
 
-  @override
-  _DynamicWindowState createState() => _DynamicWindowState();
-}
-
-class _DynamicWindowState extends State<DynamicWindow>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _opacityAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 2), // Duração do ciclo
-      vsync: this,
-    )..repeat(reverse: true); // Repetir animação continuamente
-
-    _opacityAnimation = Tween<double>(begin: 0.2, end: 0.8).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  const DynamicWindow({
+    super.key,
+    this.width = 37,
+    this.height = 23,
+    this.margin,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 40,
-      height: 30,
+      margin: margin,
+      width: width,
+      height: height,
       decoration: BoxDecoration(
-        color: Colors.grey[300], // Cor base da janela
+        color: Colors.grey[300], // Base da janela
         border: Border.all(color: Colors.black, width: 1), // Contorno preto
         boxShadow: [
           BoxShadow(
@@ -605,32 +595,111 @@ class _DynamicWindowState extends State<DynamicWindow>
           ),
         ],
       ),
+    );
+  }
+}
+
+// Janelas maiores para o andar intermediário
+class LargeDynamicWindow extends StatelessWidget {
+  final double width;
+  final double height;
+  final EdgeInsets? margin;
+
+  const LargeDynamicWindow({
+    super.key,
+    this.width = 42,
+    this.height = 31,
+    this.margin,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DynamicWindow(
+      width: width,
+      height: height,
+      margin: margin,
+    );
+  }
+}
+
+class CEOFloor extends StatelessWidget {
+  const CEOFloor({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 170, // Um pouco mais largo que os outros andares
+      height: 90, // Altura maior para destacar
+      decoration: BoxDecoration(
+        color: Colors.grey[500], // Cor diferenciada
+        border: Border.all(
+            color: Colors.black, width: 0.8), // Contorno mais evidente
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            offset: const Offset(2, 4), // Sombra levemente inclinada
+            blurRadius: 6,
+          ),
+        ],
+      ),
       child: Stack(
+        alignment: Alignment.center,
         children: [
-          // Reflexo dinâmico
-          AnimatedBuilder(
-            animation: _opacityAnimation,
-            builder: (context, child) {
-              return Opacity(
-                opacity: _opacityAnimation.value,
-                child: Container(
-                  margin: const EdgeInsets.only(top: 5, left: 5),
-                  width: 15,
-                  height: 10,
+          // Janelas exclusivas do andar do CEO
+          Positioned(
+            top: 15,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: List.generate(
+                3,
+                (index) => Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 5),
+                  width: 40,
+                  height: 30,
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(3),
+                    color: Colors.blueGrey[100],
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(color: Colors.black, width: 1),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.white.withOpacity(0.5),
-                        blurRadius: 4,
-                        spreadRadius: 1,
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 2,
+                        offset: const Offset(1, 1),
                       ),
                     ],
                   ),
                 ),
-              );
-            },
+              ),
+            ),
+          ),
+          // Detalhes decorativos
+          Positioned(
+            bottom: 5,
+            child: Container(
+              width: 80,
+              height: 20,
+              decoration: BoxDecoration(
+                color: Colors.cyan[100],
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.cyan.withOpacity(0.4),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: const Center(
+                child: Text(
+                  'CEO Office',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),
