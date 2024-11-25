@@ -200,7 +200,7 @@ class _HomePageContent extends StatelessWidget {
                   // Garantir que o Navigator utilize o contexto correto
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const DoMoneySimulation(),
+                      builder: (context) => const PredioDoMoneyPage(),
                     ),
                   );
                 },
