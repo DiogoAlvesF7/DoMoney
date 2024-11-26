@@ -1,6 +1,5 @@
 import 'screens/artigos.dart';
 import 'screens/carteira_digital.dart';
-import 'screens/ranking.dart';
 
 import 'screens/home_page.dart';
 import 'screens/perfil.dart';
@@ -29,7 +28,6 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const HomePage(),
         '/perfil': (context) => const ProfilePage(),
-        '/ranking': (context) => const RankingPage(),
         '/artigos': (context) => const ArticlesPage(),
         '/carteira_digital': (context) => const CarteiraDigitalPage(),
       },

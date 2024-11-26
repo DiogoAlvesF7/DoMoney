@@ -1,5 +1,4 @@
 import 'package:do_money_teste/screens/home_page.dart';
-import 'package:do_money_teste/screens/subscreens/predio_domoney.dart';
 import 'package:flutter/material.dart';
 
 class PredioDoMoneyPage extends StatefulWidget {
@@ -63,7 +62,7 @@ class _PredioDoMoneyPageState extends State<PredioDoMoneyPage> {
               },
               child: Image.asset(
                 'assets/images/Captura de tela 2024-11-25 115059.png',
-                width: screenWidth * 0.4,
+                width: screenWidth * 0.3,
                 height: screenHeight,
                 fit: BoxFit.cover,
                 opacity: AlwaysStoppedAnimation(0.4),
@@ -73,104 +72,7 @@ class _PredioDoMoneyPageState extends State<PredioDoMoneyPage> {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Positioned.fill(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    itemCount: _modulos.length,
-                    itemBuilder: (context, index) {
-                      final modulo = _modulos[index];
-                      final isSelected = _selectedModulo == index;
-
-                      return GestureDetector(
-                        onTap: () => _abrirModulo(index),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          margin: EdgeInsets.only(
-                            left: index % 2 == 0 ? 50 : 100,
-                            right: index % 2 == 0 ? 100 : 50,
-                            top: 20,
-                          ),
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: isSelected
-                                  ? [Colors.orange[700]!, Colors.orange[400]!]
-                                  : [Colors.orange[400]!, Colors.orange[300]!],
-                            ),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 10,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                modulo['icone'],
-                                color: Colors.white,
-                                size: 40,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                modulo['titulo'],
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                // Drawer com informações detalhadas
-                if (_selectedModulo != -1)
-                  Positioned.fill(
-                    child: Drawer(
-                      elevation: 16,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  _modulos[_selectedModulo]['titulo'],
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.close),
-                                  onPressed: _fecharDrawer,
-                                ),
-                              ],
-                            ),
-                            const Divider(),
-                            Text(
-                              "Progresso: ${(_modulos[_selectedModulo]['progresso'] * 100).toInt()}%",
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                            const SizedBox(height: 16),
-                            const Text("Materiais Didáticos: 5"),
-                            const Text("Quizzes: 5"),
-                            const Text("Progresso Geral: 60%"),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                DoMoneyPath(),
               ],
             ),
           ),
@@ -180,47 +82,225 @@ class _PredioDoMoneyPageState extends State<PredioDoMoneyPage> {
   }
 }
 
-Widget _buildModuloItem(String nome, IconData icone, Color color) {
-  return Column(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Container(
-        width: 100,
-        height: 100,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 6,
-              spreadRadius: 1,
-              offset: const Offset(2, 4), // Sombra externa
+class DoMoneyPath extends StatelessWidget {
+  final List<Map<String, dynamic>> modules = [
+    {"title": "Introdução", "progress": 1.0, "icon": Icons.lightbulb_outline},
+    {"title": "Gestão de Gastos", "progress": 0.8, "icon": Icons.attach_money},
+    {"title": "Investimentos", "progress": 0.5, "icon": Icons.bar_chart},
+    {"title": "Planejamento", "progress": 0.3, "icon": Icons.trending_up},
+    {"title": "Simulação Avançada", "progress": 0.0, "icon": Icons.assessment},
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: modules
+                .asMap()
+                .entries
+                .map((entry) => _buildModuleWidget(entry.key, entry.value))
+                .toList(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModuleWidget(int index, Map<String, dynamic> module) {
+    final bool isLeftAligned = index % 2 == 0;
+
+    return Row(
+      mainAxisAlignment:
+          isLeftAligned ? MainAxisAlignment.start : MainAxisAlignment.end,
+      children: [
+        Column(
+          crossAxisAlignment:
+              isLeftAligned ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+          children: [
+            // Título do módulo
+            Text(
+              module['title'],
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            BoxShadow(
-              color: Colors.white.withOpacity(0.2),
-              blurRadius: 2,
-              spreadRadius: 1,
-              offset: const Offset(-2, -2), // Sombra interna curvada
+            const SizedBox(height: 8),
+            // Círculo com símbolo
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                // Círculo 3D
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: const LinearGradient(
+                      colors: [Colors.orange, Colors.deepOrange],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(4, 4),
+                      ),
+                    ],
+                  ),
+                ),
+                // Ícone no centro do círculo
+                Icon(
+                  module['icon'],
+                  size: 40,
+                  color: Colors.white,
+                ),
+              ],
             ),
+            const SizedBox(height: 8),
+            // Estrelas de aproveitamento
+            _buildStarsWidget(module['progress']),
+            const SizedBox(height: 24), // Espaçamento entre os módulos
           ],
         ),
-        child: Icon(
-          icone,
-          color: Colors.white,
-          size: 40,
-        ),
+      ],
+    );
+  }
+
+  Widget _buildStarsWidget(double progress) {
+    // Cálculo da quantidade de estrelas preenchidas
+    int fullStars =
+        (progress * 3).floor(); // Número de estrelas totalmente preenchidas
+    double remainingProgress = (progress * 3) -
+        fullStars; // Progresso restante para semi-preenchimento
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 4.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(3, (index) {
+          if (index < fullStars) {
+            // Estrela totalmente preenchida
+            return const Icon(Icons.star, color: Colors.amber, size: 24);
+          } else if (index == fullStars && remainingProgress > 0) {
+            // Estrela semi-preenchida
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                const Icon(Icons.star,
+                    color: Colors.grey, size: 24), // Fundo cinza
+                ClipRect(
+                  clipper: _HalfStarClipper(remainingProgress),
+                  child: const Icon(Icons.star,
+                      color: Colors.amber, size: 24), // Metade amarela
+                ),
+              ],
+            );
+          } else {
+            // Estrela não preenchida
+            return const Icon(Icons.star_border, color: Colors.grey, size: 24);
+          }
+        }),
       ),
-      const SizedBox(height: 8),
-      Text(
-        nome,
-        textAlign: TextAlign.center,
-        style: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-        ),
+    );
+  }
+}
+
+// Clipper para cortar a parte da estrela
+class _HalfStarClipper extends CustomClipper<Rect> {
+  final double progress; // Entre 0.0 e 1.0
+
+  _HalfStarClipper(this.progress);
+
+  @override
+  Rect getClip(Size size) {
+    return Rect.fromLTRB(0, 0, size.width * progress, size.height);
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Rect> oldClipper) {
+    return true;
+  }
+}
+
+class ModuleButton extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+
+  const ModuleButton({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Círculo com profundidade e ícone
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: 90,
+            height: 90,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: const LinearGradient(
+                colors: [Colors.orange, Colors.deepOrange],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              boxShadow: [
+                // Sombra externa para profundidade
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(4, 4),
+                ),
+                // Sombra interna sutil
+                BoxShadow(
+                  color: Colors.white.withOpacity(0.3),
+                  blurRadius: 4,
+                  offset: const Offset(-4, -4),
+                  spreadRadius: -2,
+                ),
+              ],
+            ),
+            child: Center(
+              child: Icon(
+                icon,
+                size: 40,
+                color: Colors.white,
+                shadows: [
+                  Shadow(
+                    color: Colors.black.withOpacity(0.5),
+                    blurRadius: 8,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8), // Espaçamento entre o botão e o texto
+          // Título do módulo
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
-    ],
-  );
+    );
+  }
 }
