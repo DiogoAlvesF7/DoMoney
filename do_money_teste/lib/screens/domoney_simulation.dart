@@ -1,4 +1,3 @@
-import 'package:do_money_teste/screens/home_page.dart';
 import 'package:flutter/material.dart';
 
 class PredioDoMoneyPage extends StatefulWidget {
@@ -9,7 +8,6 @@ class PredioDoMoneyPage extends StatefulWidget {
 }
 
 class _PredioDoMoneyPageState extends State<PredioDoMoneyPage> {
-  int _selectedModulo = -1; // Nenhum módulo selecionado inicialmente
   final List<Map<String, dynamic>> _modulos = [
     {"icone": Icons.lightbulb, "titulo": "Introdução", "progresso": 1.0},
     {
@@ -22,16 +20,13 @@ class _PredioDoMoneyPageState extends State<PredioDoMoneyPage> {
     {"icone": Icons.sim_card, "titulo": "Simulação Avançada", "progresso": 0.0},
   ];
 
-  void _abrirModulo(int index) {
+  int _selectedModulo = -1;
+
+  void _abrirDrawer(BuildContext ctx, int index) {
     setState(() {
       _selectedModulo = index;
     });
-  }
-
-  void _fecharDrawer() {
-    setState(() {
-      _selectedModulo = -1;
-    });
+    Scaffold.of(ctx).openEndDrawer();
   }
 
   @override
@@ -48,31 +43,167 @@ class _PredioDoMoneyPageState extends State<PredioDoMoneyPage> {
         backgroundColor: Colors.orange,
         centerTitle: true,
       ),
-      body: Row(
+      endDrawer: _selectedModulo != -1
+          ? _buildModuleDrawer(_modulos[_selectedModulo])
+          : null,
+      body: Builder(
+        builder: (ctx) => Row(
+          children: [
+            // Prédio na lateral esquerda
+            Image.asset(
+              'assets/images/Captura de tela 2024-11-25 115059.png',
+              width: screenWidth * 0.35,
+              height: screenHeight,
+              fit: BoxFit.cover,
+            ),
+            // Caminho de conquistas
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ListView.builder(
+                  itemCount: _modulos.length,
+                  itemBuilder: (context, index) {
+                    final modulo = _modulos[index];
+                    return Align(
+                      alignment: index.isEven
+                          ? Alignment.centerLeft
+                          : Alignment.centerRight,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Título do módulo
+                          Container(
+                            constraints: const BoxConstraints(maxWidth: 120),
+                            child: Text(
+                              modulo['titulo'],
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          // Botão do módulo
+                          Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              ModuleButton(
+                                icon: modulo['icone'],
+                                onTap: () => _abrirDrawer(ctx, index),
+                              ),
+                              // Estrelas abaixo
+                              Positioned(
+                                bottom: -25,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: List.generate(3, (starIndex) {
+                                    final double threshold =
+                                        (modulo["progresso"] / 3.0) *
+                                            (starIndex + 1);
+                                    return _buildStar(
+                                        threshold, modulo["progresso"]);
+                                  }),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 40),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStar(double threshold, double progresso) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Icon(
+          Icons.star,
+          size: 20,
+          color: Colors.grey[300], // Fundo da estrela
+        ),
+        ClipRect(
+          clipper: _HalfStarClipper(progresso / threshold),
+          child: Icon(
+            Icons.star,
+            size: 20,
+            color: Colors.yellow, // Preenchimento da estrela
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildModuleDrawer(Map<String, dynamic> modulo) {
+    return Drawer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Prédio na lateral esquerda
-          GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomePage(),
-                  ),
-                );
-              },
-              child: Image.asset(
-                'assets/images/Captura de tela 2024-11-25 115059.png',
-                width: screenWidth * 0.3,
-                height: screenHeight,
-                fit: BoxFit.cover,
-                opacity: AlwaysStoppedAnimation(0.4),
-              )),
-          // Caminho de conquistas
-          Expanded(
-            child: Stack(
-              alignment: Alignment.center,
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.orange,
+            ),
+            child: Center(
+              child: Text(
+                modulo["titulo"],
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.book, color: Colors.orange),
+            title: const Text("Materiais Didáticos"),
+            onTap: () {
+              // Abrir página de materiais didáticos
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.quiz, color: Colors.orange),
+            title: const Text("Quizzes"),
+            onTap: () {
+              // Abrir página de quizzes
+            },
+          ),
+          const Divider(),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                DoMoneyPath(),
+                const Text(
+                  "Progresso",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                LinearProgressIndicator(
+                  value: modulo["progresso"],
+                  backgroundColor: Colors.grey[300],
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Concluído: ${(modulo["progresso"] * 100).toInt()}%",
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                  ),
+                ),
               ],
             ),
           ),
@@ -82,135 +213,90 @@ class _PredioDoMoneyPageState extends State<PredioDoMoneyPage> {
   }
 }
 
-class DoMoneyPath extends StatelessWidget {
-  final List<Map<String, dynamic>> modules = [
-    {"title": "Introdução", "progress": 1.0, "icon": Icons.lightbulb_outline},
-    {"title": "Gestão de Gastos", "progress": 0.8, "icon": Icons.attach_money},
-    {"title": "Investimentos", "progress": 0.5, "icon": Icons.bar_chart},
-    {"title": "Planejamento", "progress": 0.3, "icon": Icons.trending_up},
-    {"title": "Simulação Avançada", "progress": 0.0, "icon": Icons.assessment},
-  ];
+class ModuleButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+  final double progress;
+
+  const ModuleButton({
+    super.key,
+    required this.icon,
+    required this.onTap,
+    this.progress = 0.0,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: modules
-                .asMap()
-                .entries
-                .map((entry) => _buildModuleWidget(entry.key, entry.value))
-                .toList(),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildModuleWidget(int index, Map<String, dynamic> module) {
-    final bool isLeftAligned = index % 2 == 0;
-
-    return Row(
-      mainAxisAlignment:
-          isLeftAligned ? MainAxisAlignment.start : MainAxisAlignment.end,
-      children: [
-        Column(
-          crossAxisAlignment:
-              isLeftAligned ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+    return GestureDetector(
+      onTap: onTap,
+      child: SizedBox(
+        width: 120, // Aumentado para comportar a sombra e estrelas
+        height: 100, // Aumentado para comportar o conteúdo extra
+        child: Stack(
+          clipBehavior: Clip.none, // Permitir que conteúdo transborde
+          alignment: Alignment.center,
           children: [
-            // Título do módulo
-            Text(
-              module['title'],
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
+            // Sombra achatada
+            Positioned(
+              bottom: 43, // Ajuste para alinhar com a base do botão
+              child: CustomPaint(
+                size: const Size(80, 12), // Tamanho da sombra
+                painter: ButtonShadowPainter(),
               ),
             ),
-            const SizedBox(height: 8),
-            // Círculo com símbolo
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                // Círculo 3D
-                Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: const LinearGradient(
-                      colors: [Colors.orange, Colors.deepOrange],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 8,
-                        offset: const Offset(4, 4),
-                      ),
-                    ],
+            // Botão principal
+            Container(
+              width: 90, // Largura maior para o formato oval
+              height: 80, // Altura menor para o formato oval
+              decoration: BoxDecoration(
+                shape: BoxShape.circle, // Não será mais um círculo
+                gradient: const LinearGradient(
+                  colors: [Colors.orange, Colors.deepOrange],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 8,
+                    offset: const Offset(4, 4),
                   ),
+                ],
+                border: Border.all(
+                  color: Colors.black.withOpacity(0.1),
+                  width: 2,
                 ),
-                // Ícone no centro do círculo
-                Icon(
-                  module['icon'],
-                  size: 40,
-                  color: Colors.white,
-                ),
-              ],
+              ),
+              child: Icon(
+                icon,
+                size: 40,
+                color: Colors.white,
+              ),
             ),
-            const SizedBox(height: 8),
-            // Estrelas de aproveitamento
-            _buildStarsWidget(module['progress']),
-            const SizedBox(height: 24), // Espaçamento entre os módulos
+            // Estrelas abaixo do botão
+            Positioned(
+              bottom: 0, // Reposicionar para aparecer abaixo do botão
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(3, (index) {
+                  final double threshold = (index + 1) / 3.0;
+                  return Icon(
+                    Icons.star,
+                    size: 20,
+                    color: progress >= threshold
+                        ? Colors.yellow
+                        : Colors.grey[300],
+                  );
+                }),
+              ),
+            ),
           ],
         ),
-      ],
-    );
-  }
-
-  Widget _buildStarsWidget(double progress) {
-    // Cálculo da quantidade de estrelas preenchidas
-    int fullStars =
-        (progress * 3).floor(); // Número de estrelas totalmente preenchidas
-    double remainingProgress = (progress * 3) -
-        fullStars; // Progresso restante para semi-preenchimento
-
-    return Padding(
-      padding: const EdgeInsets.only(left: 4.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: List.generate(3, (index) {
-          if (index < fullStars) {
-            // Estrela totalmente preenchida
-            return const Icon(Icons.star, color: Colors.amber, size: 24);
-          } else if (index == fullStars && remainingProgress > 0) {
-            // Estrela semi-preenchida
-            return Stack(
-              alignment: Alignment.center,
-              children: [
-                const Icon(Icons.star,
-                    color: Colors.grey, size: 24), // Fundo cinza
-                ClipRect(
-                  clipper: _HalfStarClipper(remainingProgress),
-                  child: const Icon(Icons.star,
-                      color: Colors.amber, size: 24), // Metade amarela
-                ),
-              ],
-            );
-          } else {
-            // Estrela não preenchida
-            return const Icon(Icons.star_border, color: Colors.grey, size: 24);
-          }
-        }),
       ),
     );
   }
 }
 
-// Clipper para cortar a parte da estrela
 class _HalfStarClipper extends CustomClipper<Rect> {
   final double progress; // Entre 0.0 e 1.0
 
@@ -227,80 +313,27 @@ class _HalfStarClipper extends CustomClipper<Rect> {
   }
 }
 
-class ModuleButton extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final VoidCallback onTap;
+class ButtonShadowPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..color = Colors.orange[700]!;
 
-  const ModuleButton({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.onTap,
-  });
+    // Ponto inicial: à esquerda, no ponto mais largo do botão
+    final path = Path()
+      ..moveTo(0, 0) // Ponto inicial
+      ..lineTo(0, size.height) // Prolongamento para baixo
+      ..arcToPoint(
+        Offset(
+            size.width, size.height), // Desenho do arco conectando as laterais
+        radius: Radius.circular(size.width / 2),
+        clockwise: false,
+      )
+      ..lineTo(size.width, 0) // Prolongamento para cima
+      ..close(); // Conecta o último ponto ao primeiro
+
+    canvas.drawPath(path, paint);
+  }
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Círculo com profundidade e ícone
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            width: 90,
-            height: 90,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: const LinearGradient(
-                colors: [Colors.orange, Colors.deepOrange],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              boxShadow: [
-                // Sombra externa para profundidade
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 8,
-                  offset: const Offset(4, 4),
-                ),
-                // Sombra interna sutil
-                BoxShadow(
-                  color: Colors.white.withOpacity(0.3),
-                  blurRadius: 4,
-                  offset: const Offset(-4, -4),
-                  spreadRadius: -2,
-                ),
-              ],
-            ),
-            child: Center(
-              child: Icon(
-                icon,
-                size: 40,
-                color: Colors.white,
-                shadows: [
-                  Shadow(
-                    color: Colors.black.withOpacity(0.5),
-                    blurRadius: 8,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 8), // Espaçamento entre o botão e o texto
-          // Título do módulo
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
