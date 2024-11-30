@@ -1,3 +1,4 @@
+import 'package:do_money_teste/screens/subscreens/graficos_despesas.dart';
 import 'package:flutter/material.dart';
 import 'resumo_balanco.dart'; // Arquivo com o widget ResumoBalanco
 
@@ -9,7 +10,7 @@ class BalancoFinanceiro extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Resumo Financeiro',
+          'Balanço Financeiro',
           style: TextStyle(
               color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
         ),
@@ -22,7 +23,7 @@ class BalancoFinanceiro extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Resumo do Balanço
-            ResumoBalanco(
+            const ResumoBalanco(
               receitaMedia: 3200.75,
               transacoesRecentes: [
                 {
@@ -50,21 +51,112 @@ class BalancoFinanceiro extends StatelessWidget {
             ),
 
             const SizedBox(height: 32),
-
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Despesas',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
             // Espaço reservado para Gráficos
-            const Placeholder(
-              fallbackHeight: 300,
-              color: Colors.orange,
-              strokeWidth: 2,
-            ),
             const SizedBox(height: 16),
-
-            // Espaço reservado para Ações de Personalização
-            const Placeholder(
-              fallbackHeight: 200,
-              color: Colors.blue,
-              strokeWidth: 2,
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 32.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        GraficoDespesas();
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.blue
+                              .shade100, // Fundo claro para indicar seleção
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.blue.shade300.withOpacity(0.4),
+                              blurRadius: 8,
+                              offset: const Offset(2, 4),
+                            ),
+                          ],
+                        ),
+                        child: const Row(
+                          children: [
+                            Icon(Icons.pie_chart, color: Colors.blue, size: 20),
+                            SizedBox(width: 8),
+                            Text(
+                              'Setores',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16), // Espaçamento entre botões
+                    GestureDetector(
+                      onTap: () {},
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.orange
+                              .shade100, // Fundo claro para indicar seleção
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.orange.shade300.withOpacity(0.4),
+                              blurRadius: 8,
+                              offset: const Offset(2, 4),
+                            ),
+                          ],
+                        ),
+                        child: const Row(
+                          children: [
+                            Icon(Icons.bar_chart,
+                                color: Colors.orange, size: 20),
+                            SizedBox(width: 8),
+                            Text(
+                              'Barras',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.orange,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
+
+            const SizedBox(height: 16),
+            // Integrando o widget do gráfico aqui
+            SizedBox(
+              height: 400, // Altura ajustável
+              child: GraficoDespesas(),
+            ),
+            // Espaço reservado para Ações de Personalização
           ],
         ),
       ),

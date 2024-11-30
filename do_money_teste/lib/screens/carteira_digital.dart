@@ -24,17 +24,9 @@ class _CarteiraDigitalPageState extends State<CarteiraDigitalPage> {
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
+            fontSize: 20,
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            color: Colors.white,
-            onPressed: () {
-              // Ações para configurações
-            },
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

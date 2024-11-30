@@ -75,12 +75,17 @@ class ResumoBalanco extends StatelessWidget {
             const SizedBox(height: 20),
 
             // Transações Recentes (Carrossel Cascata)
-            const Text(
-              "Transações Recentes",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Transações Recentes",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 12),
 
