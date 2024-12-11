@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart'; // Para gráficos
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  final String nomeUsuario = "Diogo Ferreira";
+  final String fotoPerfil =
+      "https://via.placeholder.com/150"; // URL da imagem de perfil
+  final String cargoAtual = "Gerente Financeiro";
+  final double salarioAtual = 12500.00; // Salário fictício
+  final List<Map<String, dynamic>> conquistas = [
+    {"titulo": "Primeiro Investimento", "descricao": "Investiu pela 1ª vez."},
+    {"titulo": "Meta Atingida", "descricao": "Concluiu uma meta financeira."},
+    {"titulo": "XP Máximo", "descricao": "Alcançou 1000 XP em um mês."},
+  ];
+  final List<String> amigos = ["Ana", "Carlos", "Laura", "Bruno"];
+  final List<Map<String, dynamic>> metas = [
+    {"meta": "Economizar R\$ 5000", "status": "Concluída"},
+    {"meta": "Investir R\$ 2000", "status": "Em Progresso"},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -10,317 +23,183 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: const Text(
-          'Perfil',
+          "Perfil",
           style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
             fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            color: Colors.white,
-            onPressed: () {
-              // Navegar para configurações
-            },
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header do Perfil
+            _buildHeader(),
+            const SizedBox(height: 24),
+
+            // Conquistas
+            _buildConquistas(),
+            const SizedBox(height: 24),
+
+            // Metas de Investimento
+            _buildMetas(),
+            const SizedBox(height: 24),
+
+            // Amigos no App
+            _buildAmigos(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Header do Perfil
+  Widget _buildHeader() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Colors.orange, Colors.deepOrangeAccent],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Foto do Usuário
+          CircleAvatar(
+            radius: 50,
+            backgroundImage: NetworkImage(fotoPerfil),
+          ),
+          const SizedBox(height: 16),
+
+          // Nome e Cargo Atual
+          Text(
+            nomeUsuario,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            cargoAtual,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.white70,
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Salário Atual
+          Text(
+            "Salário Atual: R\$ ${salarioAtual.toStringAsFixed(2)}",
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildProfileSection(context),
-              const SizedBox(height: 20),
-              _buildStatisticsSection(context),
-              const SizedBox(height: 20),
-              _buildProgressSection(),
-              const SizedBox(height: 20),
-              _buildAchievementsSection(),
-              const SizedBox(height: 20),
-              _buildFriendsSection(context),
-              const SizedBox(height: 20),
-              _buildGoalsSection(),
-              const SizedBox(height: 20),
-              _buildRewardsSection(),
-            ],
+    );
+  }
+
+  // Conquistas
+  Widget _buildConquistas() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Conquistas",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildProfileSection(BuildContext context) {
-    return Row(
-      children: [
-        const CircleAvatar(
-          radius: 50,
-          backgroundImage: NetworkImage('https://i.imgur.com/Qr71crq.png'),
-        ),
-        const SizedBox(width: 16),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Nome do Usuário',
-              style: TextStyle(fontSize: 20),
+        const SizedBox(height: 16),
+        ...conquistas.map((conquista) {
+          return ListTile(
+            leading: const Icon(Icons.star, color: Colors.orange),
+            title: Text(
+              conquista["titulo"],
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            Text(
-              'usuario@domoney.com',
-              style: TextStyle(fontSize: 12),
-            ),
-            const SizedBox(height: 8),
-            ElevatedButton(
-              onPressed: () {
-                // Ação para adicionar amigos
-              },
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.green,
-              ),
-              child: const Text('Adicionar Amigos'),
-            ),
-          ],
-        ),
+            subtitle: Text(conquista["descricao"]),
+          );
+        }).toList(),
       ],
     );
   }
 
-  Widget _buildStatisticsSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Estatísticas',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        const SizedBox(height: 8),
-        _buildStatsCard('Tempo Jogando', '15h 30m'),
-        _buildStatsCard('Dias de Ofensiva', '7 dias'),
-        _buildStatsCard('XP', '2000 XP'),
-        _buildStatsCard('Módulos Feitos', '12 módulos'),
-        _buildStatsCard('Questões Respondidas', '150 questões'),
-        _buildStatsCard('Troféus', '3 troféus'),
-        _buildStatsCard('Nível', 'Pro'),
-      ],
-    );
-  }
-
-  Widget _buildProgressSection() {
+  // Metas de Investimento
+  Widget _buildMetas() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Progresso',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        SizedBox(
-          height: 200,
-          child: LineChart(
-            LineChartData(
-              gridData: const FlGridData(show: false),
-              titlesData: const FlTitlesData(show: true),
-              borderData: FlBorderData(show: true),
-              lineBarsData: [
-                LineChartBarData(
-                  spots: [
-                    const FlSpot(0, 5),
-                    const FlSpot(1, 10),
-                    const FlSpot(2, 15),
-                    const FlSpot(3, 20),
-                  ],
-                  isCurved: true,
-                  dotData: const FlDotData(show: true),
-                  belowBarData: BarAreaData(
-                    show: true,
-                    color: Colors.blue.withOpacity(0.5),
-                  ),
-                ),
-              ],
-            ),
+          "Metas de Investimento",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 8),
-        _buildProgressLegend(),
-      ],
-    );
-  }
-
-  Widget _buildProgressLegend() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _buildLegendItem(Colors.blue, 'Progresso Geral'),
-        _buildLegendItem(Colors.green, 'Objetivos Diários'),
-        _buildLegendItem(Colors.orange, 'Módulos Concluídos'),
-      ],
-    );
-  }
-
-  Widget _buildLegendItem(Color color, String text) {
-    return Row(
-      children: [
-        Container(
-          width: 10,
-          height: 10,
-          color: color,
-        ),
-        const SizedBox(width: 4),
-        Text(text),
-      ],
-    );
-  }
-
-  Widget _buildAchievementsSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Conquistas',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        _buildAchievementCard('Conquista 1', 'Descrição da conquista 1'),
-        _buildAchievementCard('Conquista 2', 'Descrição da conquista 2'),
-        _buildAchievementCard('Conquista 3', 'Descrição da conquista 3'),
-        _buildAchievementCard('Conquista 4', 'Descrição da conquista 4'),
-      ],
-    );
-  }
-
-  Widget _buildFriendsSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Amigos',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            const CircleAvatar(
-              radius: 25,
-              backgroundImage: NetworkImage(
-                  'https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0='),
+        const SizedBox(height: 16),
+        ...metas.map((meta) {
+          return ListTile(
+            leading: const Icon(Icons.flag, color: Colors.orange),
+            title: Text(
+              meta["meta"],
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            const SizedBox(width: 8),
-            const CircleAvatar(
-              radius: 25,
-              backgroundImage: NetworkImage(
-                  'https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0='),
-            ),
-            const SizedBox(width: 8),
-            const CircleAvatar(
-              radius: 25,
-              backgroundImage: NetworkImage(
-                  'https://media.istockphoto.com/id/1495088043/vector/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=dhV2p1JwmloBTOaGAtaA3AW1KSnjsdMt7-U_3EZElZ0='),
-            ),
-            const SizedBox(width: 8),
-            ElevatedButton(
-              onPressed: () {
-                // Ação para ver mais amigos
-              },
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.green,
+            trailing: Text(
+              meta["status"],
+              style: TextStyle(
+                color: meta["status"] == "Concluída"
+                    ? Colors.green
+                    : Colors.orange,
               ),
-              child: const Text('Ver Todos'),
             ),
-          ],
-        ),
+          );
+        }).toList(),
       ],
     );
   }
 
-  Widget _buildGoalsSection() {
+  // Amigos no App
+  Widget _buildAmigos() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Metas',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          "Amigos no App",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        const SizedBox(height: 8),
-        _buildGoalCard('Meta 1', 'Complete 5 módulos por semana'),
-        _buildGoalCard('Meta 2', 'Responda 50 questões diariamente'),
-        _buildGoalCard('Meta 3', 'Ganhe 500 XP por mês'),
+        const SizedBox(height: 16),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: amigos.map((amigo) {
+            return Chip(
+              label: Text(amigo),
+              avatar: const Icon(Icons.person, color: Colors.white),
+              backgroundColor: Colors.orange,
+              labelStyle: const TextStyle(color: Colors.white),
+            );
+          }).toList(),
+        ),
       ],
-    );
-  }
-
-  Widget _buildRewardsSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Recompensas',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        _buildRewardCard('Recompensa 1', 'Desbloqueie um novo avatar'),
-        _buildRewardCard('Recompensa 2', 'Acesso a conteúdo exclusivo'),
-        _buildRewardCard('Recompensa 3', 'Ganhe medalhas de honra'),
-      ],
-    );
-  }
-
-  Widget _buildStatsCard(String title, String value) {
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(16.0),
-        title: Text(title),
-        trailing: Text(
-          value,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAchievementCard(String title, String description) {
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(16.0),
-        leading: const Icon(Icons.star, color: Colors.amber),
-        title: Text(title),
-        subtitle: Text(description),
-      ),
-    );
-  }
-
-  Widget _buildGoalCard(String title, String description) {
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(16.0),
-        leading: const Icon(Icons.flag, color: Colors.blue),
-        title: Text(title),
-        subtitle: Text(description),
-        trailing: const Icon(Icons.check, color: Colors.green),
-      ),
-    );
-  }
-
-  Widget _buildRewardCard(String title, String description) {
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(16.0),
-        leading: const Icon(Icons.card_giftcard, color: Colors.red),
-        title: Text(title),
-        subtitle: Text(description),
-      ),
     );
   }
 }

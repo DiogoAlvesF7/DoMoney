@@ -246,10 +246,10 @@ class ModuleButton extends StatelessWidget {
             ),
             // Botão principal
             Container(
-              width: 90, // Largura maior para o formato oval
+              width: 100, // Largura maior para o formato oval
               height: 80, // Altura menor para o formato oval
               decoration: BoxDecoration(
-                shape: BoxShape.circle, // Não será mais um círculo
+                shape: BoxShape.circle,
                 gradient: const LinearGradient(
                   colors: [Colors.orange, Colors.deepOrange],
                   begin: Alignment.topLeft,
@@ -282,10 +282,17 @@ class ModuleButton extends StatelessWidget {
                   final double threshold = (index + 1) / 3.0;
                   return Icon(
                     Icons.star,
-                    size: 20,
+                    size: 25,
                     color: progress >= threshold
                         ? Colors.yellow
-                        : Colors.grey[300],
+                        : const Color.fromARGB(255, 238, 214, 3),
+                    shadows: [
+                      Shadow(
+                        offset: Offset(2, 2),
+                        blurRadius: 1,
+                        color: Colors.black.withOpacity(0.6),
+                      ),
+                    ],
                   );
                 }),
               ),

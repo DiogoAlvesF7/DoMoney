@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class GraficoDespesas extends StatefulWidget {
+  const GraficoDespesas({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _GraficoDespesasState createState() => _GraficoDespesasState();
 }
 
@@ -337,12 +338,19 @@ class _GraficoDespesasState extends State<GraficoDespesas>
             child: Column(
               children: [
                 // Valor total das despesas no topo
+                const Text(
+                  "Total: ",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 Text(
-                  "Total: R\$ ${_valorTotal.toStringAsFixed(2)}",
+                  "R\$ ${total.toStringAsFixed(2)}",
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Colors.redAccent,
                   ),
                 ),
 
@@ -527,8 +535,8 @@ class _GraficoDespesasState extends State<GraficoDespesas>
                         const SizedBox(width: 8),
                         AnimatedRotation(
                           turns: _listaExpandida
-                              ? 0.5
-                              : 0, // Gira o ícone suavemente
+                              ? 0
+                              : 1, // Gira o ícone suavemente
                           duration: const Duration(milliseconds: 300),
                           child: Icon(
                             _listaExpandida
@@ -663,122 +671,3 @@ class _GraficoDespesasState extends State<GraficoDespesas>
     );
   }
 }
-
-class GraficoDespesasBarra extends StatefulWidget {
-  final Map<String, double> segmentos;
-  final ValueChanged<String> onSegmentoSelecionado;
-
-  const GraficoDespesasBarra({
-    Key? key,
-    required this.segmentos,
-    required this.onSegmentoSelecionado,
-  }) : super(key: key);
-
-  @override
-  _GraficoDespesasBarraState createState() => _GraficoDespesasBarraState();
-}
-
-class _GraficoDespesasBarraState extends State<GraficoDespesasBarra> {
-  String? _segmentoSelecionado;
-
-  @override
-  Widget build(BuildContext context) {
-    final maxY = widget.segmentos.values.reduce((a, b) => a > b ? a : b);
-
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: BarChart(
-        BarChartData(
-          maxY: maxY * 1.2, // Espaço extra no topo
-          borderData: FlBorderData(
-            show: true,
-            border: Border.all(color: Colors.grey, width: 1),
-          ),
-          gridData: FlGridData(show: true),
-          barTouchData: BarTouchData(
-            touchTooltipData: BarTouchTooltipData(
-              getTooltipColor: (group) => Colors.grey.shade900,
-              getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                return BarTooltipItem(
-                  '${widget.segmentos.keys.elementAt(groupIndex)}\nR\$ ${rod.toY.toStringAsFixed(2)}',
-                  const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                );
-              },
-            ),
-            touchCallback: (event, response) {
-              if (response != null &&
-                  response.spot != null &&
-                  event.isInterestedForInteractions) {
-                final touchedIndex = response.spot!.touchedBarGroupIndex;
-                final segmento = widget.segmentos.keys.elementAt(touchedIndex);
-                setState(() {
-                  _segmentoSelecionado = segmento;
-                });
-                widget.onSegmentoSelecionado(segmento);
-              } else {
-                setState(() {
-                  _segmentoSelecionado = null;
-                });
-                widget.onSegmentoSelecionado('');
-              }
-            },
-          ),
-          titlesData: FlTitlesData(
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (value, meta) {
-                  return Text(
-                    'R\$ ${value.toStringAsFixed(0)}',
-                    style: const TextStyle(
-                      fontSize: 10,
-                      color: Colors.grey,
-                    ),
-                  );
-                },
-              ),
-            ),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (value, meta) {
-                  final index = value.toInt();
-                  if (index >= widget.segmentos.keys.length) return Container();
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      widget.segmentos.keys.elementAt(index),
-                      style: const TextStyle(fontSize: 10),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-          barGroups:
-              widget.segmentos.entries.toList().asMap().entries.map((entry) {
-            final index = entry.key;
-            final segment = entry.value;
-            final isSelected = _segmentoSelecionado == segment.key;
-            return BarChartGroupData(
-              x: index,
-              barRods: [
-                BarChartRodData(
-                  toY: segment.value,
-                  color: isSelected ? Colors.red : Colors.redAccent,
-                  width: isSelected ? 15 : 10,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ],
-              showingTooltipIndicators: [0],
-            );
-          }).toList(),
-        ),
-      ),
-    );
-  }
-}
-

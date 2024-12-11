@@ -4,7 +4,7 @@ import 'package:do_money_teste/screens/subscreens/predio_domoney.dart';
 import 'package:do_money_teste/screens/carteira_digital.dart';
 import 'package:do_money_teste/screens/perfil.dart';
 import 'subscreens/balanco_financeiro.dart';
-import 'artigos.dart';
+import 'noticias.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,8 +20,8 @@ class _HomePageState extends State<HomePage> {
     const BalancoFinanceiro(),
     const CarteiraDigitalPage(),
     const _HomePageContent(), // Conteúdo da Home
-    const ArticlesPage(),
-    const ProfilePage(),
+    NoticiasPage(),
+    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
@@ -49,6 +49,7 @@ class _HomePageState extends State<HomePage> {
           builder: (BuildContext context) {
             return IconButton(
               icon: const Icon(Icons.menu, color: Colors.white, size: 28),
+              tooltip: 'Abrir menu',
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -64,17 +65,27 @@ class _HomePageState extends State<HomePage> {
               decoration: BoxDecoration(
                 color: Color(0xFFFF9800),
               ),
-              child: Text(
-                'Menu',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 28,
+                    backgroundColor: Colors.white,
+                    child:
+                        Icon(Icons.person, size: 40, color: Color(0xFFFF9800)),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Bem-vindo, Usuário!',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                ],
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.info, color: Colors.black),
-              title: const Text('Sobre'),
+              leading: const Icon(Icons.lightbulb, color: Colors.black),
+              title: const Text('Como Jogar'),
               onTap: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pushNamed('/about');
@@ -101,7 +112,7 @@ class _HomePageState extends State<HomePage> {
               title: const Text('Sair'),
               onTap: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pushNamed('/login');
+                Navigator.of(context).pushNamed('/logout');
               },
             ),
           ],
@@ -278,6 +289,7 @@ class ProgressIndicator extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text(
           "Progresso atual",
@@ -287,42 +299,62 @@ class ProgressIndicator extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8), // Espaçamento entre o texto e a barra
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            // Barra de fundo
-            Container(
-              width: screenWidth * 0.6, // Largura fixa da barra
-              height: 16,
-              decoration: BoxDecoration(
-                color: Colors.grey[300], // Fundo da barra
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            // Barra de progresso preenchida
-            SizedBox(
-              width: screenWidth * 0.6, // Mesma largura que a barra de fundo
-              height: 16,
-              child: FractionallySizedBox(
-                widthFactor: progress, // Progresso dinâmico
-                alignment: Alignment.centerLeft,
-                child: Container(
+        TweenAnimationBuilder<double>(
+          tween: Tween<double>(begin: 0.0, end: progress),
+          duration: const Duration(seconds: 2), // Tempo da animação
+          builder: (context, value, child) {
+            return Stack(
+              alignment:
+                  Alignment.centerLeft, // Garantir alinhamento à esquerda
+              children: [
+                // Barra de fundo
+                Container(
+                  width: screenWidth * 0.6,
+                  height: 16,
                   decoration: BoxDecoration(
-                    color: Colors.orange,
+                    color: const Color.fromARGB(255, 219, 214, 214),
                     borderRadius: BorderRadius.circular(4),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 2,
+                        offset: Offset(0, 1),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ),
-            // Texto de porcentagem no centro
-            Text(
-              "${(progress * 100).toInt()}%", // Converte para porcentagem
-              style: const TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+                // Barra de progresso preenchida
+                Container(
+                  width: screenWidth * 0.6 * value, // Crescimento da esquerda
+                  height: 18,
+                  decoration: const BoxDecoration(
+                    color: Colors.orange,
+                    borderRadius: BorderRadius.horizontal(
+                      left:
+                          Radius.circular(4), // Bordas arredondadas à esquerda
+                      right: Radius.circular(
+                          4), // Bordas à direita ajustadas dinamicamente
+                    ),
+                  ),
+                ),
+                // Texto de porcentagem no centro
+                Padding(
+                  padding: const EdgeInsets.only(left: 90.0),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "${(value * 100).toInt()}%", // Progresso em porcentagem
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ],
     );
@@ -401,7 +433,13 @@ class DynamicBackgroundPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = Colors.grey[400]!.withOpacity(0.5);
+    final paint = Paint()
+      ..shader = LinearGradient(
+        colors: [Colors.grey[200]!.withOpacity(0.5), Colors.grey[400]!],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ).createShader(Rect.fromLTRB(0, 0, size.width, size.height));
+
     final buildingWidth = size.width / 8;
 
     for (int i = 0; i < heights.length; i++) {

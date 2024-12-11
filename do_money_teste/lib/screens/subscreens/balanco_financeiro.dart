@@ -1,28 +1,60 @@
-import 'package:do_money_teste/screens/subscreens/graficos_despesas.dart';
 import 'package:flutter/material.dart';
-import 'resumo_balanco.dart'; // Arquivo com o widget ResumoBalanco
+import 'graficos_despesas.dart';
+import 'resumo_balanco.dart';
+import 'grafico_barras.dart';
 
-class BalancoFinanceiro extends StatelessWidget {
+class BalancoFinanceiro extends StatefulWidget {
   const BalancoFinanceiro({super.key});
 
   @override
+  _BalancoFinanceiroState createState() => _BalancoFinanceiroState();
+}
+
+class _BalancoFinanceiroState extends State<BalancoFinanceiro> {
+  bool exibirGraficoBarras = false; // Controle para alternar entre gráficos
+  final Map<String, double> segmentos = {
+    "Alimentação": 80.0,
+    "Transporte": 50.0,
+    "Saúde": 100.0,
+    "Educação": 40.0,
+    "Lazer": 30.0,
+  };
+
+  String? _segmentoSelecionado;
+
+  // Selecionar ou desselecionar segmento
+  void _selecionarSegmento(String segmento) {
+    setState(() {
+      if (_segmentoSelecionado == segmento) {
+        _segmentoSelecionado = null;
+      } else {
+        _segmentoSelecionado = segmento;
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final total = segmentos.values.reduce((a, b) => a + b);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           'Balanço Financeiro',
           style: TextStyle(
-              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         backgroundColor: Colors.black,
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Resumo do Balanço
             const ResumoBalanco(
               receitaMedia: 3200.75,
               transacoesRecentes: [
@@ -49,114 +81,152 @@ class BalancoFinanceiro extends StatelessWidget {
                 },
               ],
             ),
+            const SizedBox(height: 24),
 
-            const SizedBox(height: 32),
-            const Row(
+            // Título centralizado
+            const Padding(
+              padding: EdgeInsets.only(bottom: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Título principal
+                  Text(
+                    "Despesas",
+                    style: TextStyle(
+                      fontSize: 28, // Um pouco menor para um equilíbrio
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  SizedBox(height: 6),
+                  // Subtítulo minimalista
+                  Text(
+                    "Acompanhe seus gastos em gráficos",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Alternância entre gráficos
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'Despesas',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      exibirGraficoBarras = false;
+                    });
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 20.0),
+                    decoration: BoxDecoration(
+                      color: !exibirGraficoBarras
+                          ? Colors.redAccent
+                          : Colors.grey[300],
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: !exibirGraficoBarras
+                          ? [
+                              BoxShadow(
+                                color: Colors.redAccent.withOpacity(0.4),
+                                blurRadius: 8,
+                                offset: const Offset(2, 4),
+                              ),
+                            ]
+                          : [],
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.pie_chart,
+                          color: !exibirGraficoBarras
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          "Setores",
+                          style: TextStyle(
+                            color: !exibirGraficoBarras
+                                ? Colors.white
+                                : Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      exibirGraficoBarras = true;
+                    });
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 20.0),
+                    decoration: BoxDecoration(
+                      color: exibirGraficoBarras
+                          ? Colors.redAccent
+                          : Colors.grey[300],
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: exibirGraficoBarras
+                          ? [
+                              BoxShadow(
+                                color: Colors.redAccent.withOpacity(0.4),
+                                blurRadius: 8,
+                                offset: const Offset(2, 4),
+                              ),
+                            ]
+                          : [],
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.bar_chart,
+                          color:
+                              exibirGraficoBarras ? Colors.white : Colors.black,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          "Barras",
+                          style: TextStyle(
+                            color: exibirGraficoBarras
+                                ? Colors.white
+                                : Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
             ),
-            // Espaço reservado para Gráficos
-            const SizedBox(height: 16),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 32.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        GraficoDespesas();
-                      },
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16),
-                        decoration: BoxDecoration(
-                          color: Colors.blue
-                              .shade100, // Fundo claro para indicar seleção
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.blue.shade300.withOpacity(0.4),
-                              blurRadius: 8,
-                              offset: const Offset(2, 4),
-                            ),
-                          ],
-                        ),
-                        child: const Row(
-                          children: [
-                            Icon(Icons.pie_chart, color: Colors.blue, size: 20),
-                            SizedBox(width: 8),
-                            Text(
-                              'Setores',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16), // Espaçamento entre botões
-                    GestureDetector(
-                      onTap: () {},
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16),
-                        decoration: BoxDecoration(
-                          color: Colors.orange
-                              .shade100, // Fundo claro para indicar seleção
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.orange.shade300.withOpacity(0.4),
-                              blurRadius: 8,
-                              offset: const Offset(2, 4),
-                            ),
-                          ],
-                        ),
-                        child: const Row(
-                          children: [
-                            Icon(Icons.bar_chart,
-                                color: Colors.orange, size: 20),
-                            SizedBox(width: 8),
-                            Text(
-                              'Barras',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.orange,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
 
             const SizedBox(height: 16),
-            // Integrando o widget do gráfico aqui
+
+            // Gráfico selecionado
             SizedBox(
-              height: 400, // Altura ajustável
-              child: GraficoDespesas(),
+              height: 500,
+              child: exibirGraficoBarras
+                  ? GraficoBarras(
+                      segmentos: segmentos,
+                      segmentoSelecionado: _segmentoSelecionado,
+                      selecionarSegmento: _selecionarSegmento,
+                      total: total,
+                    )
+                  : GraficoDespesas(),
             ),
-            // Espaço reservado para Ações de Personalização
           ],
         ),
       ),
