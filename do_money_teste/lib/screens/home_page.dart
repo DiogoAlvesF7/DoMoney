@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage> {
 
   static final List<Widget> _pages = <Widget>[
     const BalancoFinanceiro(),
-    const CarteiraDigitalPage(),
+    CarteiraDigitalPage(),
     const _HomePageContent(), // Conteúdo da Home
     NoticiasPage(),
     ProfilePage(),

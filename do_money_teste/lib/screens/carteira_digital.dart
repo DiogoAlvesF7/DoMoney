@@ -1,4 +1,6 @@
+import 'package:do_money_teste/screens/subscreens/extrato.dart';
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class CarteiraDigitalPage extends StatefulWidget {
   const CarteiraDigitalPage({super.key});
@@ -7,123 +9,149 @@ class CarteiraDigitalPage extends StatefulWidget {
   _CarteiraDigitalPageState createState() => _CarteiraDigitalPageState();
 }
 
-class _CarteiraDigitalPageState extends State<CarteiraDigitalPage> {
-  double _totalInvestido = 15000.00;
-  double _retornoGeral = 12.5; // Em percentual
-  double _metaInvestimento = 20000.00;
-  List<Map<String, dynamic>> _investimentos = [
-    {
-      "nome": "Ação XPTO",
-      "valorAtual": 120.0,
-      "retorno": 8.2, // Em percentual
-      "categoria": "Ações",
-    },
-    {
-      "nome": "Criptomoeda XYZ",
-      "valorAtual": 0.0021,
-      "retorno": 15.0,
-      "categoria": "Criptomoedas",
-    },
-    {
-      "nome": "CDB Alpha",
-      "valorAtual": 1050.0,
-      "retorno": 5.1,
-      "categoria": "CDB",
-    },
+class _CarteiraDigitalPageState extends State<CarteiraDigitalPage>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  final double valorTotalCarteira = 30509.04;
+
+  final List<Map<String, dynamic>> segmentos = [
+    {"nome": "Ações", "valor": 9149.99, "cor": Colors.blueAccent},
+    {"nome": "CDB", "valor": 8970.99, "cor": Colors.greenAccent},
+    {"nome": "COE", "valor": 8990.99, "cor": Colors.orangeAccent},
+    {"nome": "Debêntures", "valor": 7900.99, "cor": Colors.purpleAccent},
   ];
 
-  List<Map<String, dynamic>> _transacoes = [
-    {"data": "01/09/2024", "descricao": "Compra de Ações", "valor": -2000.00},
-    {"data": "05/09/2024", "descricao": "Venda de Cripto", "valor": 500.00},
-    {"data": "10/09/2024", "descricao": "Compra de CDB", "valor": -1000.00},
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
         title: const Text(
-          'Carteira Digital',
+          "Carteira Digital",
           style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
             fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
         ),
         backgroundColor: Colors.black,
         centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Resumo da Carteira
-            _buildResumoCarteira(),
-            const SizedBox(height: 24),
-
-            // Meta de Investimento
-            _buildMetaInvestimento(),
-            const SizedBox(height: 24),
-
-            // Carteira de Investimentos
-            _buildCarteiraInvestimentos(),
-            const SizedBox(height: 24),
-
-            // Histórico de Transações
-            _buildHistoricoTransacoes(),
+        elevation: 0,
+        bottom: TabBar(
+          controller: _tabController,
+          indicatorColor: Colors.orange,
+          labelColor: Colors.orange,
+          unselectedLabelColor: Colors.white70,
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+          tabs: const [
+            Tab(text: "Início"),
+            Tab(text: "Extrato"),
           ],
         ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          // Página de Início
+          _buildInicio(),
+
+          // Página de Extrato
+          _buildExtrato(),
+        ],
       ),
     );
   }
 
-  // Resumo da Carteira
-  Widget _buildResumoCarteira() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Colors.orange, Colors.deepOrangeAccent],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+  // Conteúdo da Página de Início
+  Widget _buildInicio() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Total",
+                  style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
+                Icon(
+                  Icons.remove_red_eye_outlined,
+                  color: Colors.white,
+                )
+              ],
+            ),
           ),
+          _buildValorTotalCarteira(),
+          const SizedBox(height: 24),
+          _buildGraficoCircular(),
+          const SizedBox(height: 16),
+          _buildLegenda(),
+          const SizedBox(height: 24),
+          _buildSimuladorFinanceiro(),
         ],
+      ),
+    );
+  }
+
+  // Valor Total da Carteira
+  Widget _buildValorTotalCarteira() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[900],
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Valor da carteira",
+                style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                "R\$ ${valorTotalCarteira.toStringAsFixed(2)}",
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
           const Text(
-            "Resumo da Carteira",
+            "Atualizado em: 16/12/2024",
             style: TextStyle(
-              fontSize: 16,
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            "Total Investido: R\$ ${_totalInvestido.toStringAsFixed(2)}",
-            style: const TextStyle(
-              fontSize: 20,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            "Retorno Geral: ${_retornoGeral.toStringAsFixed(1)}%",
-            style: TextStyle(
-              fontSize: 16,
-              color: _retornoGeral >= 0 ? Colors.green : Colors.red,
-              fontWeight: FontWeight.bold,
+              fontSize: 12,
+              color: Colors.white54,
             ),
           ),
         ],
@@ -131,123 +159,231 @@ class _CarteiraDigitalPageState extends State<CarteiraDigitalPage> {
     );
   }
 
-  // Meta de Investimento
-  Widget _buildMetaInvestimento() {
-    double progresso = _totalInvestido / _metaInvestimento;
-    progresso = progresso > 1.0 ? 1.0 : progresso;
-
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Meta de Investimento",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-            LinearProgressIndicator(
-              value: progresso,
-              backgroundColor: Colors.grey[300],
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.orange),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              "Progresso: ${(progresso * 100).toStringAsFixed(1)}%",
-              style: const TextStyle(fontSize: 14),
-            ),
-          ],
+  // Gráfico Circular Neon
+  Widget _buildGraficoCircular() {
+    return Center(
+      child: SizedBox(
+        height: 250,
+        child: PieChart(
+          PieChartData(
+            sectionsSpace: 4,
+            centerSpaceRadius: 90, // Espaço central maior (mais fino)
+            sections: segmentos.map((segmento) {
+              return PieChartSectionData(
+                value: segmento["valor"],
+                color: segmento["cor"],
+                radius: 30,
+                title: "",
+              );
+            }).toList(),
+          ),
         ),
       ),
     );
   }
 
-  // Carteira de Investimentos
-  Widget _buildCarteiraInvestimentos() {
+  // Legenda do Gráfico
+  Widget _buildLegenda() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          "Carteira de Investimentos",
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+      children: segmentos.map((segmento) {
+        return ListTile(
+          leading: CircleAvatar(
+            backgroundColor: segmento["cor"],
+            radius: 8,
           ),
-        ),
-        const SizedBox(height: 16),
-        ..._investimentos.map((investimento) {
-          return Card(
-            elevation: 2,
-            margin: const EdgeInsets.only(bottom: 12),
-            child: ListTile(
-              leading: Icon(
-                Icons.trending_up,
-                color: investimento['retorno'] >= 0 ? Colors.green : Colors.red,
-              ),
-              title: Text(investimento['nome']),
-              subtitle: Text("Categoria: ${investimento['categoria']}"),
-              trailing: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "R\$ ${investimento['valorAtual'].toStringAsFixed(2)}",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "${investimento['retorno'].toStringAsFixed(1)}%",
-                    style: TextStyle(
-                      color: investimento['retorno'] >= 0
-                          ? Colors.green
-                          : Colors.red,
-                    ),
-                  ),
-                ],
-              ),
+          title: Text(
+            segmento["nome"],
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
-          );
-        }).toList(),
-      ],
+          ),
+          trailing: Column(
+            children: [
+              Text(
+                "R\$ ${segmento["valor"].toStringAsFixed(2)}",
+                style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.white70,
+                    fontWeight: FontWeight.bold),
+              ),
+              const Text(
+                "27% da carteira",
+                style: TextStyle(
+                  fontSize: 10,
+                  color: Colors.white70,
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
     );
   }
 
-  // Histórico de Transações
-  Widget _buildHistoricoTransacoes() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          "Histórico de Transações",
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+  // Placeholder do Simulador
+  Widget _buildSimuladorFinanceiro() {
+    String _tipoInvestimento = 'Ações'; // Valor inicial do dropdown
+    String _periodoInvestimento = '1 mês';
+    double _valorInvestido = 0.0;
+    double? _resultadoSimulacao;
+
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.grey[900],
+            borderRadius: BorderRadius.circular(12),
           ),
-        ),
-        const SizedBox(height: 16),
-        ..._transacoes.map((transacao) {
-          return ListTile(
-            leading: Icon(
-              transacao['valor'] >= 0
-                  ? Icons.arrow_upward
-                  : Icons.arrow_downward,
-              color: transacao['valor'] >= 0 ? Colors.green : Colors.red,
-            ),
-            title: Text(transacao['descricao']),
-            subtitle: Text(transacao['data']),
-            trailing: Text(
-              "R\$ ${transacao['valor'].toStringAsFixed(2)}",
-              style: TextStyle(
-                color: transacao['valor'] >= 0 ? Colors.green : Colors.red,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Título
+              const Text(
+                "Simulador Financeiro",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
-            ),
-          );
-        }).toList(),
-      ],
+              const SizedBox(height: 12),
+
+              // Tipo de Investimento
+              const Text(
+                "Tipo de Investimento:",
+                style: TextStyle(color: Colors.white70),
+              ),
+              DropdownButton<String>(
+                dropdownColor: Colors.grey[850],
+                value: _tipoInvestimento,
+                isExpanded: true,
+                style: const TextStyle(color: Colors.white),
+                underline: Container(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _tipoInvestimento = newValue!;
+                  });
+                },
+                items: <String>['Ações', 'CDB', 'COE', 'Debêntures']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 12),
+
+              // Valor do Investimento
+              const Text(
+                "Valor do Investimento:",
+                style: TextStyle(color: Colors.white70),
+              ),
+              TextField(
+                keyboardType: TextInputType.number,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.grey[850],
+                  hintText: "Digite o valor",
+                  hintStyle: const TextStyle(color: Colors.white54),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                onChanged: (value) {
+                  _valorInvestido = double.tryParse(value) ?? 0.0;
+                },
+              ),
+              const SizedBox(height: 12),
+
+              // Período do Investimento
+              const Text(
+                "Período do Investimento:",
+                style: TextStyle(color: Colors.white70),
+              ),
+              DropdownButton<String>(
+                dropdownColor: Colors.grey[850],
+                value: _periodoInvestimento,
+                isExpanded: true,
+                style: const TextStyle(color: Colors.white),
+                underline: Container(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _periodoInvestimento = newValue!;
+                  });
+                },
+                items: <String>['1 mês', '6 meses', '1 ano', '5 anos']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 16),
+
+              // Botão de Simular
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      // Simulação de lógica fictícia
+                      double rendimento = 0.0;
+                      if (_tipoInvestimento == 'Ações') rendimento = 0.15;
+                      if (_tipoInvestimento == 'CDB') rendimento = 0.05;
+                      if (_tipoInvestimento == 'COE') rendimento = 0.10;
+                      if (_tipoInvestimento == 'Debêntures') rendimento = 0.08;
+
+                      int multiplicador = _periodoInvestimento == '1 mês'
+                          ? 1
+                          : _periodoInvestimento == '6 meses'
+                              ? 6
+                              : _periodoInvestimento == '1 ano'
+                                  ? 12
+                                  : 60;
+
+                      _resultadoSimulacao = _valorInvestido *
+                          (1 + (rendimento * multiplicador / 12));
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                  ),
+                  child: const Text(
+                    "Simular",
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Resultado da Simulação
+              if (_resultadoSimulacao != null)
+                Center(
+                  child: Text(
+                    "Valor Final: R\$ ${_resultadoSimulacao!.toStringAsFixed(2)}",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.greenAccent,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
     );
+  }
+
+  // Página de Extrato
+  Widget _buildExtrato() {
+    return ExtratoPage();
   }
 }

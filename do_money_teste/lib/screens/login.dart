@@ -94,7 +94,7 @@ class WelcomePage extends StatelessWidget {
         ElevatedButton(
           onPressed: () {
             // Navegar para a página de login
-            Navigator.of(context).pushNamed('/login');
+            Navigator.of(context).pushNamed('/');
           },
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),

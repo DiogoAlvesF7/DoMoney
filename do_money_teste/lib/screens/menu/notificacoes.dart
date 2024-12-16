@@ -109,7 +109,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                   // Simular salvamento das configurações
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text("Configurações salvas com sucesso!"),
+                      content: Text("Salvo com sucesso!"),
                       duration: Duration(seconds: 2),
                     ),
                   );
@@ -125,7 +125,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                   ),
                 ),
                 child: const Text(
-                  "Salvar Configurações",
+                  "Salvar",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

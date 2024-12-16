@@ -1,3 +1,4 @@
+import 'package:do_money_teste/screens/login.dart';
 import 'package:do_money_teste/screens/menu/configuracoes.dart';
 import 'package:do_money_teste/screens/menu/notificacoes.dart';
 import 'package:do_money_teste/screens/menu/sair.dart';
@@ -35,16 +36,17 @@ class MyApp extends StatelessWidget {
           centerTitle: true,
         ),
       ),
-      initialRoute: '/',
+      initialRoute: '/welcome',
       routes: {
         '/': (context) => const HomePage(),
         '/perfil': (context) => ProfilePage(),
         '/artigos': (context) => NoticiasPage(),
-        '/carteira_digital': (context) => const CarteiraDigitalPage(),
+        '/carteira_digital': (context) => CarteiraDigitalPage(),
         '/logout': (context) => LogoutPage(),
         '/settings': (context) => SettingsPage(),
         '/about': (context) => AboutPage(),
         '/notifications': (context) => NotificationsPage(),
+        '/welcome': (context) => WelcomePage(),
       },
     );
   }
