@@ -1,4 +1,4 @@
-import 'package:do_money_teste/screens/login.dart';
+import 'package:do_money_teste/screens/welcome.dart';
 import 'package:do_money_teste/screens/menu/configuracoes.dart';
 import 'package:do_money_teste/screens/menu/notificacoes.dart';
 import 'package:do_money_teste/screens/menu/sair.dart';

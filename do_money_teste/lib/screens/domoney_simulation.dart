@@ -51,7 +51,7 @@ class _PredioDoMoneyPageState extends State<PredioDoMoneyPage> {
           children: [
             // Prédio na lateral esquerda
             Image.asset(
-              'assets/images/Captura de tela 2024-11-25 115059.png',
+              'assets/images/Captura de tela 2024-12-18 210631.png',
               width: screenWidth * 0.35,
               height: screenHeight,
               fit: BoxFit.cover,

@@ -1,104 +1,182 @@
 import 'package:flutter/material.dart';
 
 class AboutPage extends StatelessWidget {
-  final List<Map<String, String>> passos = [
-    {
-      "titulo": "Crie suas Metas",
-      "descricao":
-          "Defina metas financeiras, como economizar ou investir valores fictícios.",
-    },
-    {
-      "titulo": "Simule Investimentos",
-      "descricao":
-          "Escolha entre ações, criptomoedas ou renda fixa e veja os resultados fictícios.",
-    },
-    {
-      "titulo": "Desbloqueie Conquistas",
-      "descricao":
-          "Alcance marcos importantes, como completar uma meta ou atingir XP máximo.",
-    },
-    {
-      "titulo": "Progrida na Carreira",
-      "descricao":
-          "Ganhe XP, suba de nível e alcance cargos como Diretor Financeiro no mundo DoMoney.",
-    },
-  ];
+  const AboutPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: const Text(
-          "Como Jogar",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          "Introdução",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
-        backgroundColor: Colors.orange,
         centerTitle: true,
+        elevation: 0,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Título
+            // Título principal
             const Text(
               "Bem-vindo ao DoMoney!",
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                color: Colors.white,
               ),
-              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
+
+            // Descrição inicial
             const Text(
-              "Aprenda a gerenciar suas finanças de forma divertida e educativa. Aqui está como você pode começar:",
-              style: TextStyle(fontSize: 16, color: Colors.black54),
+              "O DoMoney é um aplicativo que combina elementos educativos e gamificação para ajudá-lo a tornar-se um indivíduo economicamente educado enquanto se diverte. Confira como aproveitar ao máximo cada funcionalidade:",
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.white70,
+                height: 1.5,
+              ),
             ),
             const SizedBox(height: 24),
 
-            // Lista de Passos
-            ...passos.map((passo) => _buildStepCard(passo)).toList(),
+            // Funcionalidade: Balanço Financeiro
+            _buildFeatureCard(
+              icon: Icons.pie_chart_outline,
+              title: "Balanço Financeiro",
+              description:
+                  "Acompanhe suas finanças reais com gráficos intuitivos e resumos detalhados. Veja receitas, despesas e metas alcançadas.",
+              onTap: () {
+                // Navegar para a página de Balanço Financeiro
+              },
+            ),
 
-            const SizedBox(height: 24),
+            // Funcionalidade: Carteira Digital
+            _buildFeatureCard(
+              icon: Icons.account_balance_wallet_outlined,
+              title: "Carteira Digital",
+              description:
+                  "Simule investimentos fictícios baseados em dados reais do mercado financeiro. Experimente ações, CDBs, e mais.",
+              onTap: () {
+                // Navegar para a página de Carteira Digital
+              },
+            ),
 
-            // Rodapé Motivacional
-            _buildFooter(context),
+            // Funcionalidade: Notícias
+            _buildFeatureCard(
+              icon: Icons.newspaper_outlined,
+              title: "Notícias",
+              description:
+                  "Mantenha-se atualizado com as principais notícias do mercado financeiro, personalizadas de acordo com suas preferências.",
+              onTap: () {
+                // Navegar para a página de Notícias
+              },
+            ),
+
+            // Funcionalidade: Metas Financeiras
+            _buildFeatureCard(
+              icon: Icons.flag_outlined,
+              title: "Metas Financeiras",
+              description:
+                  "Defina e acompanhe suas metas financeiras pessoais de forma prática e motivadora.",
+              onTap: () {
+                // Navegar para a página de Metas
+              },
+            ),
+
+            // Funcionalidade: Gamificação
+            _buildFeatureCard(
+              icon: Icons.emoji_events_outlined,
+              title: "Gamificação",
+              description:
+                  "Complete missões, ganhe conquistas e suba de nível enquanto aprende sobre finanças e alcança suas metas.",
+              onTap: () {
+                // Navegar para a página de Gamificação
+              },
+            ),
+
+            // Funcionalidade: Suporte
+            _buildFeatureCard(
+              icon: Icons.help_outline,
+              title: "Suporte",
+              description:
+                  "Precisa de ajuda? Acesse nossa central de suporte ou entre em contato diretamente pelo aplicativo.",
+              onTap: () {
+                // Navegar para a página de Suporte
+              },
+            ),
           ],
         ),
       ),
     );
   }
 
-  // Card de cada passo
-  Widget _buildStepCard(Map<String, String> passo) {
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
+  // Widget para os cards de funcionalidades
+  Widget _buildFeatureCard({
+    required IconData icon,
+    required String title,
+    required String description,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.grey[900],
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
         child: Row(
           children: [
-            // Título e Descrição
+            // Ícone
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.orange.withOpacity(0.2),
+              ),
+              child: Icon(
+                icon,
+                size: 28,
+                color: Colors.orange,
+              ),
+            ),
+            const SizedBox(width: 16),
+
+            // Texto do card
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    passo["titulo"]!,
+                    title,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: Colors.white,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4),
                   Text(
-                    passo["descricao"]!,
+                    description,
                     style: const TextStyle(
                       fontSize: 14,
-                      color: Colors.black54,
+                      color: Colors.white70,
+                      height: 1.5,
                     ),
                   ),
                 ],
@@ -106,47 +184,6 @@ class AboutPage extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  // Rodapé Motivacional
-  Widget _buildFooter(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          const Text(
-            "Pronto para começar sua jornada financeira?",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              // Navegar para a página principal
-              Navigator.of(context).pushReplacementNamed('/');
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-            ),
-            child: const Text(
-              "Começar Agora",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

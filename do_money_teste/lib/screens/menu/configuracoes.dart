@@ -1,146 +1,238 @@
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatelessWidget {
+  const SettingsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: const Text(
           "Configurações",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
-        backgroundColor: Colors.orange,
         centerTitle: true,
+        elevation: 0,
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         children: [
-          // Configurações Gerais
-          const SectionTitle(title: "Gerais"),
-          SettingsTile(
-            icon: Icons.language,
+          // Título
+          const Text(
+            "Personalize sua experiência no DoMoney",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Modo Escuro
+          _buildSwitchOption(
+            context: context,
+            title: "Modo Escuro",
+            description: "Ative ou desative o tema escuro.",
+            value: true, // Simular valor inicial
+            onChanged: (bool value) {
+              // Função para alternar o tema
+            },
+          ),
+
+          // Configurações de Notificações
+          _buildSwitchOption(
+            context: context,
+            title: "Notificações Push",
+            description:
+                "Receba alertas sobre investimentos, metas e notícias.",
+            value: true, // Simular valor inicial
+            onChanged: (bool value) {
+              // Função para ativar/desativar notificações
+            },
+          ),
+
+          // Idioma
+          _buildListTileOption(
+            context: context,
             title: "Idioma",
+            description: "Escolha o idioma do app.",
+            icon: Icons.language,
             onTap: () {
-              // Ação para alterar idioma
-            },
-          ),
-          SettingsTile(
-            icon: Icons.brightness_6,
-            title: "Tema",
-            onTap: () {
-              // Ação para alterar tema
-            },
-          ),
-          SettingsTile(
-            icon: Icons.notifications,
-            title: "Notificações",
-            onTap: () {
-              // Ação para gerenciar notificações
+              // Abrir modal para selecionar idioma
             },
           ),
 
-          const Divider(height: 32),
-
-          // Configurações de Conta
-          const SectionTitle(title: "Conta"),
-          SettingsTile(
-            icon: Icons.person,
-            title: "Editar Informações Pessoais",
-            onTap: () {
-              // Ação para editar informações pessoais
-            },
-          ),
-          SettingsTile(
+          // Segurança
+          _buildListTileOption(
+            context: context,
+            title: "Segurança",
+            description: "Gerencie sua senha e biometria.",
             icon: Icons.lock,
-            title: "Alterar Senha",
             onTap: () {
-              // Ação para alterar senha
-            },
-          ),
-          SettingsTile(
-            icon: Icons.delete,
-            title: "Excluir Conta",
-            onTap: () {
-              // Ação para excluir conta
+              // Abrir configurações de segurança
             },
           ),
 
-          const Divider(height: 32),
+          // Histórico de Login
+          _buildListTileOption(
+            context: context,
+            title: "Histórico de Login",
+            description: "Veja os dispositivos que acessaram sua conta.",
+            icon: Icons.history,
+            onTap: () {
+              // Abrir página de histórico de login
+            },
+          ),
 
-          // Informações do Aplicativo
-          const SectionTitle(title: "Informações"),
-          SettingsTile(
-            icon: Icons.info,
-            title: "Sobre o App",
+          // Sobre o App
+          _buildListTileOption(
+            context: context,
+            title: "Sobre o DoMoney",
+            description: "Saiba mais sobre o DoMoney.",
+            icon: Icons.info_outline,
             onTap: () {
-              // Ação para exibir informações sobre o app
+              // Abrir página "Sobre"
+              Navigator.of(context).pushNamed('/about');
             },
           ),
-          SettingsTile(
-            icon: Icons.help,
-            title: "Suporte",
-            onTap: () {
-              // Ação para acessar o suporte
+
+          const Divider(color: Colors.white54),
+
+          // Botão de Logout
+          const SizedBox(height: 16),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.of(context).pushNamed('/logout');
             },
-          ),
-          SettingsTile(
-            icon: Icons.description,
-            title: "Termos de Uso",
-            onTap: () {
-              // Ação para exibir os termos de uso
-            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.redAccent,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            icon: const Icon(Icons.exit_to_app, color: Colors.white),
+            label: const Text(
+              "Sair do DoMoney",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),
     );
   }
-}
 
-// Título de Seções
-class SectionTitle extends StatelessWidget {
-  final String title;
-
-  const SectionTitle({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0, top: 16.0),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Colors.black87,
-        ),
+  // Opção com Toggle (Switch)
+  Widget _buildSwitchOption({
+    required BuildContext context,
+    required String title,
+    required String description,
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[850],
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Texto do Título e Descrição
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  description,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.white54,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Switch(
+            value: value,
+            onChanged: onChanged,
+            activeColor: Colors.orange,
+            inactiveThumbColor: Colors.grey,
+            inactiveTrackColor: Colors.grey[700],
+          ),
+        ],
       ),
     );
   }
-}
 
-// Tile de Configuração
-class SettingsTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final VoidCallback onTap;
-
-  const SettingsTile({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.orange),
-      title: Text(
-        title,
-        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+  // Opção com Ícone
+  Widget _buildListTileOption({
+    required BuildContext context,
+    required String title,
+    required String description,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[850],
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-      onTap: onTap,
+      child: ListTile(
+        leading: Icon(icon, color: Colors.orange),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+            color: Colors.white,
+          ),
+        ),
+        subtitle: Text(
+          description,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.white54,
+          ),
+        ),
+        trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white54),
+        onTap: onTap,
+      ),
     );
   }
 }

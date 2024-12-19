@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:do_money_teste/screens/subscreens/filtro_noticias.dart';
 import 'package:flutter/material.dart';
 
@@ -17,10 +19,12 @@ class _NoticiasPageState extends State<NoticiasPage> {
     "Mercado"
   ];
 
+  late PageController _pageController; // Instância do PageController
+  int _currentPage = 0;
+
   String categoriaSelecionada = "Economia"; // Apenas uma categoria selecionada
 
   final List<Map<String, dynamic>> todasNoticias = [
-    // Economia
     {
       "titulo": "Inflação nos EUA surpreende e fica abaixo do esperado",
       "imagem":
@@ -145,6 +149,36 @@ class _NoticiasPageState extends State<NoticiasPage> {
     },
   ];
 
+  Timer? _timer; // Timer para rotação automática do carrossel
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+
+    // Configura o Timer para alternar automaticamente as páginas
+    _timer = Timer.periodic(const Duration(seconds: 4), (timer) {
+      // Avança para a próxima página
+      if (_pageController.hasClients) {
+        setState(() {
+          _currentPage = (_currentPage + 1) % todasNoticias.length;
+        });
+        _pageController.animateToPage(
+          _currentPage,
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel(); // Cancela o Timer ao sair
+    _pageController.dispose(); // Libera o controlador
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -191,7 +225,7 @@ class _NoticiasPageState extends State<NoticiasPage> {
             // Carrossel de Destaques
             _buildCarrosselDestaques(),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 24.0),
 
             // Filtro de Categorias
             _buildFiltroCategorias(),
@@ -210,44 +244,64 @@ class _NoticiasPageState extends State<NoticiasPage> {
   // Carrossel de Destaques
   Widget _buildCarrosselDestaques() {
     return SizedBox(
-      height: 200,
+      height: 150, // Altura maior para um visual mais imponente
       child: PageView.builder(
+        controller: _pageController, // Associa o controlador
         itemCount: todasNoticias.length,
+        physics: const BouncingScrollPhysics(), // Animação suave ao final
         itemBuilder: (context, index) {
           final noticia = todasNoticias[index];
           return Container(
             margin: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(16),
               image: DecorationImage(
                 image: NetworkImage(noticia["imagem"]),
                 fit: BoxFit.cover,
               ),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 8,
+                  offset: Offset(0, 4),
+                ),
+              ],
             ),
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.black.withOpacity(0.7), Colors.transparent],
+                  colors: [Colors.black.withOpacity(0.6), Colors.transparent],
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                 ),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
               ),
               padding: const EdgeInsets.all(16),
               alignment: Alignment.bottomLeft,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Título com sombra
                   Text(
                     noticia["titulo"],
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 18,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black38,
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 6),
+                  // Fonte e tempo
                   Text(
                     "${noticia["fonte"]} • ${noticia["tempo"]}",
                     style: const TextStyle(
@@ -268,7 +322,7 @@ class _NoticiasPageState extends State<NoticiasPage> {
   Widget _buildFiltroCategorias() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: categorias.map((categoria) {
           final isSelected = categoriaSelecionada == categoria;
@@ -278,19 +332,29 @@ class _NoticiasPageState extends State<NoticiasPage> {
                 categoriaSelecionada = categoria;
               });
             },
-            child: Container(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
               margin: const EdgeInsets.only(right: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: BoxDecoration(
                 color: isSelected ? Colors.black : Colors.white,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.black12),
+                boxShadow: isSelected
+                    ? [
+                        const BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 6,
+                          offset: Offset(0, 2),
+                        ),
+                      ]
+                    : [],
               ),
               child: Text(
                 categoria,
                 style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.black,
+                  color: isSelected ? Colors.white : Colors.black87,
                   fontWeight: FontWeight.bold,
+                  fontSize: 14,
                 ),
               ),
             ),
@@ -312,10 +376,66 @@ class _NoticiasPageState extends State<NoticiasPage> {
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final noticia = noticiasFiltradas[index];
-        return ListTile(
-          leading: Image.network(noticia["imagem"], width: 80, height: 80),
-          title: Text(noticia["titulo"]),
-          subtitle: Text("${noticia["fonte"]} • ${noticia["tempo"]}"),
+        return GestureDetector(
+          onTap: () {
+            // Ação ao clicar no card
+          },
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 6,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                // Imagem com bordas arredondadas
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    noticia["imagem"],
+                    width: 70,
+                    height: 70,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // Conteúdo da notícia
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        noticia["titulo"],
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "${noticia["fonte"]} • ${noticia["tempo"]}",
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );

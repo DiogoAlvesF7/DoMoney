@@ -18,9 +18,9 @@ class _HomePageState extends State<HomePage> {
 
   static final List<Widget> _pages = <Widget>[
     const BalancoFinanceiro(),
-    CarteiraDigitalPage(),
+    const CarteiraDigitalPage(),
     const _HomePageContent(), // Conteúdo da Home
-    NoticiasPage(),
+    const NoticiasPage(),
     ProfilePage(),
   ];
 
@@ -58,64 +58,84 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Color(0xFFFF9800),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                    radius: 28,
-                    backgroundColor: Colors.white,
-                    child:
-                        Icon(Icons.person, size: 40, color: Color(0xFFFF9800)),
+        child: Container(
+          color: Colors.black, // Fundo escuro moderno
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: const [
+              // Cabeçalho do Drawer
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFFFF9800), Color(0xFFFF5722)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Bem-vindo, Usuário!',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                ],
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Avatar do usuário
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 28,
+                          backgroundImage: AssetImage(
+                              "assets/images/Captura de tela 2024-12-18 093558.png"),
+                        ),
+                        SizedBox(width: 12),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Diogo Ferreira',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'diogoaaferreira@gmail.com',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 12),
+                  ],
+                ),
               ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.lightbulb, color: Colors.black),
-              title: const Text('Como Jogar'),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pushNamed('/about');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.notifications, color: Colors.black),
-              title: const Text('Notificações'),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pushNamed('/notifications');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings, color: Colors.black),
-              title: const Text('Configurações'),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pushNamed('/settings');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.exit_to_app, color: Colors.black),
-              title: const Text('Sair'),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pushNamed('/logout');
-              },
-            ),
-          ],
+              // Lista de opções
+              DrawerOption(
+                icon: Icons.lightbulb,
+                label: 'Introdução ao DoMoney',
+                routeName: '/about',
+              ),
+              DrawerOption(
+                icon: Icons.notifications,
+                label: 'Notificações',
+                routeName: '/notifications',
+              ),
+              DrawerOption(
+                icon: Icons.settings,
+                label: 'Configurações',
+                routeName: '/settings',
+              ),
+              DrawerOption(
+                icon: Icons.exit_to_app,
+                label: 'Sair',
+                routeName: '/logout',
+                isDanger: true,
+              ),
+            ],
+          ),
         ),
       ),
       body: _pages[_selectedIndex],
@@ -453,4 +473,53 @@ class DynamicBackgroundPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+
+class DrawerOption extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String routeName;
+  final bool isDanger;
+
+  const DrawerOption({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.routeName,
+    this.isDanger = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: isDanger ? Colors.redAccent : Colors.white,
+      ),
+      title: Text(
+        label,
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: isDanger ? Colors.redAccent : Colors.white,
+        ),
+      ),
+      onTap: () {
+        Navigator.of(context).pop();
+        Navigator.of(context).pushNamed(routeName);
+      },
+      tileColor: Colors.grey[900],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+      horizontalTitleGap: 12,
+      trailing: const Icon(
+        Icons.arrow_forward_ios,
+        size: 14,
+        color: Colors.white54,
+      ),
+      visualDensity: VisualDensity.compact,
+    );
+  }
 }

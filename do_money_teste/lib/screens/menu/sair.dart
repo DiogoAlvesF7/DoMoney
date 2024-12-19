@@ -1,119 +1,112 @@
 import 'package:flutter/material.dart';
 
 class LogoutPage extends StatelessWidget {
+  const LogoutPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // Fundo Gradiente
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.orange, Colors.deepOrangeAccent],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-          ),
-
-          // Conteúdo Principal
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Ícone ou Ilustração
-                const Icon(
+      backgroundColor: Colors.black,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Ícone de Logout com Animação
+            AnimatedScale(
+              scale: 1.2,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+              child: CircleAvatar(
+                radius: 60,
+                backgroundColor: Colors.orange[800],
+                child: const Icon(
                   Icons.exit_to_app,
-                  size: 100,
+                  size: 60,
                   color: Colors.white,
                 ),
-                const SizedBox(height: 24),
+              ),
+            ),
+            const SizedBox(height: 24),
 
-                // Mensagem de Confirmação
-                const Text(
-                  "Deseja sair do DoMoney?",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  "Você precisará fazer login novamente para acessar o app.",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white70,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 40),
+            // Texto de Confirmação
+            const Text(
+              "Deseja realmente sair do DoMoney?",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              "Não se preocupe, você pode voltar a qualquer momento.",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white70,
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 40),
 
-                // Botões de Ação
-                _buildActionButtons(context),
+            // Botões de Confirmação
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Botão "Cancelar"
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey[850],
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      "Cancelar",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                // Botão "Sair"
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        '/welcome',
+                        (route) => false,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red[800],
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      "Sair",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    );
-  }
-
-  // Botões Confirmar e Cancelar
-  Widget _buildActionButtons(BuildContext context) {
-    return Column(
-      children: [
-        // Botão Confirmar
-        ElevatedButton(
-          onPressed: () {
-            // Lógica para sair do app
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              '/welcome', // Navega para a tela inicial
-              (route) => false, // Remove todas as rotas anteriores
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-          ),
-          child: const Text(
-            "Sair",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.redAccent,
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // Botão Cancelar
-        OutlinedButton(
-          onPressed: () {
-            Navigator.of(context).pop(); // Volta para a página anterior
-          },
-          style: OutlinedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-            side: const BorderSide(color: Colors.white),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-          ),
-          child: const Text(
-            "Cancelar",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

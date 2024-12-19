@@ -1,156 +1,135 @@
 import 'package:flutter/material.dart';
 
-class NotificationsPage extends StatefulWidget {
-  @override
-  _NotificationsPageState createState() => _NotificationsPageState();
-}
-
-class _NotificationsPageState extends State<NotificationsPage> {
-  // Estados das notificações
-  bool noticias = true;
-  bool investimentos = true;
-  bool metas = false;
-  bool conquistas = false;
-  bool outrasAtualizacoes = true;
+class NotificationsPage extends StatelessWidget {
+  const NotificationsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: const Text(
           "Notificações",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
-        backgroundColor: Colors.orange,
         centerTitle: true,
+        elevation: 0,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Título
-            const Text(
-              "Configurações de Notificações",
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        children: [
+          // Título
+          const Text(
+            "Gerencie suas notificações",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Notificações de Notícias
+          _buildSwitchOption(
+            title: "Notícias Financeiras",
+            description:
+                "Receba alertas sobre as principais notícias relacionadas ao universo financeiro.",
+            value: true,
+            onChanged: (bool value) {
+              // Função para ativar/desativar notificações de notícias
+            },
+          ),
+
+          // Notificações de Investimentos
+          _buildSwitchOption(
+            title: "Atualizações de Investimentos",
+            description:
+                "Seja notificado sobre variações na sua carteira digital.",
+            value: false,
+            onChanged: (bool value) {
+              // Função para ativar/desativar notificações de investimentos
+            },
+          ),
+
+          // Notificações de Metas
+          _buildSwitchOption(
+            title: "Progresso de Metas",
+            description:
+                "Receba lembretes e conquistas relacionadas às suas metas e ao seu progresso no Prédio DoMoney.",
+            value: true,
+            onChanged: (bool value) {
+              // Função para ativar/desativar notificações de metas
+            },
+          ),
+
+          // Notificações de Alertas do Sistema
+          _buildSwitchOption(
+            title: "Alertas do Sistema",
+            description: "Fique por dentro de atualizações e mudanças no app.",
+            value: true,
+            onChanged: (bool value) {
+              // Função para ativar/desativar notificações do sistema
+            },
+          ),
+
+          const Divider(color: Colors.white54),
+
+          // Botão de Gerenciar Notificações
+          const SizedBox(height: 16),
+          ElevatedButton.icon(
+            onPressed: () {
+              // Ação ao clicar no botão
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.orange,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            icon: const Icon(Icons.notifications_active, color: Colors.white),
+            label: const Text(
+              "Configurações Avançadas",
               style: TextStyle(
-                fontSize: 24,
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
               ),
             ),
-            const SizedBox(height: 8),
-            const Text(
-              "Escolha os tipos de notificações que deseja receber.",
-              style: TextStyle(fontSize: 16, color: Colors.black54),
-            ),
-            const SizedBox(height: 24),
-
-            // Lista de Categorias
-            _buildNotificationSwitch(
-              title: "Notícias",
-              description: "Receba alertas sobre novas notícias financeiras.",
-              value: noticias,
-              onChanged: (value) {
-                setState(() {
-                  noticias = value;
-                });
-              },
-            ),
-            _buildNotificationSwitch(
-              title: "Investimentos",
-              description:
-                  "Fique atualizado sobre o mercado e seus investimentos fictícios.",
-              value: investimentos,
-              onChanged: (value) {
-                setState(() {
-                  investimentos = value;
-                });
-              },
-            ),
-            _buildNotificationSwitch(
-              title: "Metas",
-              description: "Seja avisado quando suas metas forem concluídas.",
-              value: metas,
-              onChanged: (value) {
-                setState(() {
-                  metas = value;
-                });
-              },
-            ),
-            _buildNotificationSwitch(
-              title: "Conquistas",
-              description:
-                  "Receba notificações sobre conquistas desbloqueadas.",
-              value: conquistas,
-              onChanged: (value) {
-                setState(() {
-                  conquistas = value;
-                });
-              },
-            ),
-            _buildNotificationSwitch(
-              title: "Outras Atualizações",
-              description:
-                  "Receba alertas sobre novas funcionalidades e eventos do app.",
-              value: outrasAtualizacoes,
-              onChanged: (value) {
-                setState(() {
-                  outrasAtualizacoes = value;
-                });
-              },
-            ),
-
-            const SizedBox(height: 24),
-
-            // Botão Salvar
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  // Simular salvamento das configurações
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Salvo com sucesso!"),
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
-                    vertical: 16,
-                  ),
-                ),
-                child: const Text(
-                  "Salvar",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  // Switch de Notificação
-  Widget _buildNotificationSwitch({
+  // Widget para Switch (Toggle)
+  Widget _buildSwitchOption({
     required String title,
     required String description,
     required bool value,
-    required Function(bool) onChanged,
+    required ValueChanged<bool> onChanged,
   }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[850],
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // Texto de Título e Descrição
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,17 +137,17 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 Text(
                   title,
                   style: const TextStyle(
-                    fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    fontSize: 14,
+                    color: Colors.white,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   description,
                   style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.black54,
+                    fontSize: 12,
+                    color: Colors.white54,
                   ),
                 ),
               ],
@@ -178,6 +157,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
             value: value,
             onChanged: onChanged,
             activeColor: Colors.orange,
+            inactiveThumbColor: Colors.grey,
+            inactiveTrackColor: Colors.grey[700],
           ),
         ],
       ),
