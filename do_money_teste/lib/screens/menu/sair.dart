@@ -13,17 +13,17 @@ class LogoutPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Ícone de Logout com Animação
-            AnimatedScale(
+            const AnimatedScale(
               scale: 1.2,
-              duration: const Duration(milliseconds: 500),
+              duration: Duration(milliseconds: 500),
               curve: Curves.easeInOut,
               child: CircleAvatar(
-                radius: 60,
-                backgroundColor: Colors.orange[800],
-                child: const Icon(
-                  Icons.exit_to_app,
-                  size: 60,
-                  color: Colors.white,
+                radius: 70,
+                backgroundColor: Color(0xffff5516),
+                child: Image(
+                  image: AssetImage(
+                      'assets/images/Captura de tela 2024-12-23 114158.png'),
+                  height: 90,
                 ),
               ),
             ),

@@ -39,14 +39,14 @@ class MyApp extends StatelessWidget {
       initialRoute: '/welcome',
       routes: {
         '/': (context) => const HomePage(),
-        '/perfil': (context) => ProfilePage(),
-        '/artigos': (context) => NoticiasPage(),
+        '/perfil': (context) => const ProfilePage(),
+        '/artigos': (context) => const NoticiasPage(),
         '/carteira_digital': (context) => CarteiraDigitalPage(),
-        '/logout': (context) => LogoutPage(),
-        '/settings': (context) => SettingsPage(),
-        '/about': (context) => AboutPage(),
-        '/notifications': (context) => NotificationsPage(),
-        '/welcome': (context) => WelcomePage(),
+        '/logout': (context) => const LogoutPage(),
+        '/settings': (context) => const SettingsPage(),
+        '/about': (context) => const AboutPage(),
+        '/notifications': (context) => const NotificationsPage(),
+        '/welcome': (context) => const WelcomePage(),
       },
     );
   }

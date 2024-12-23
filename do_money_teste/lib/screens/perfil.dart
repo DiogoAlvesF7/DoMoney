@@ -95,7 +95,7 @@ class ProfilePage extends StatelessWidget {
           Stack(
             alignment: Alignment.bottomRight,
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 50,
                 backgroundImage: AssetImage(
                     "assets/images/Captura de tela 2024-12-18 093558.png"),
@@ -203,9 +203,9 @@ class ProfilePage extends StatelessWidget {
                 ),
               ],
             ),
-            child: Column(
+            child: const Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Icon(Icons.star, color: Colors.orange, size: 36),
                 SizedBox(height: 8),
                 Text(

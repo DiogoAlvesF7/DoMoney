@@ -10,6 +10,7 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomePageState createState() => _HomePageState();
 }
 
@@ -21,7 +22,7 @@ class _HomePageState extends State<HomePage> {
     const CarteiraDigitalPage(),
     const _HomePageContent(), // Conteúdo da Home
     const NoticiasPage(),
-    ProfilePage(),
+    const ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
@@ -57,87 +58,7 @@ class _HomePageState extends State<HomePage> {
           },
         ),
       ),
-      drawer: Drawer(
-        child: Container(
-          color: Colors.black, // Fundo escuro moderno
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: const [
-              // Cabeçalho do Drawer
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFFFF9800), Color(0xFFFF5722)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Avatar do usuário
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 28,
-                          backgroundImage: AssetImage(
-                              "assets/images/Captura de tela 2024-12-18 093558.png"),
-                        ),
-                        SizedBox(width: 12),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Diogo Ferreira',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              'diogoaaferreira@gmail.com',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 12),
-                  ],
-                ),
-              ),
-              // Lista de opções
-              DrawerOption(
-                icon: Icons.lightbulb,
-                label: 'Introdução ao DoMoney',
-                routeName: '/about',
-              ),
-              DrawerOption(
-                icon: Icons.notifications,
-                label: 'Notificações',
-                routeName: '/notifications',
-              ),
-              DrawerOption(
-                icon: Icons.settings,
-                label: 'Configurações',
-                routeName: '/settings',
-              ),
-              DrawerOption(
-                icon: Icons.exit_to_app,
-                label: 'Sair',
-                routeName: '/logout',
-                isDanger: true,
-              ),
-            ],
-          ),
-        ),
-      ),
+      drawer: const CustomDrawer(),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
@@ -186,6 +107,31 @@ class _HomePageState extends State<HomePage> {
         selectedItemColor: Colors.orange,
         unselectedItemColor: Colors.grey[700],
         onTap: _onItemTapped,
+      ),
+    );
+  }
+
+  Widget _buildStatCard({
+    required String value,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.orange[600],
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 12,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -246,6 +192,299 @@ class _HomePageContent extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+class CustomDrawer extends StatelessWidget {
+  const CustomDrawer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: Container(
+        color: Colors.black, // Fundo escuro
+        child: Column(
+          children: [
+            // Cabeçalho reformulado
+            DrawerHeader(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Color.fromARGB(255, 27, 27, 27),
+                      Color(0xFF292929)
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    // Avatar e informações principais
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 32,
+                            backgroundImage: AssetImage(
+                                "assets/images/Captura de tela 2024-12-18 093558.png"),
+                          ),
+                          SizedBox(width: 12),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Diogo Ferreira',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Sócio Sênior', // Cargo do usuário
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  SizedBox(width: 4),
+                                  Icon(Icons.verified,
+                                      color: Colors.blue, size: 14),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    // Indicadores em colunas
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildInfoRow(
+                            "1200 XP",
+                          ), // XP
+                          _buildInfoRow(
+                            "37",
+                            icon: Icons.emoji_events,
+                            iconColor: Colors.amber,
+                          ), // Conquistas
+                          _buildInfoRow(
+                            "3",
+                            icon: Icons.checklist_rtl_sharp,
+                            iconColor: Colors.grey[600],
+                          ), //Metas
+                          _buildInfoRow("30.509,04",
+                              icon: Icons.attach_money,
+                              iconColor: Colors.green), // Saldo
+                        ],
+                      ),
+                    ),
+                  ],
+                )),
+
+            // Opções do Drawer
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: const [
+                  DrawerOption(
+                    icon: Icons.lightbulb,
+                    label: 'Tutorial e Dicas',
+                    routeName: '/about',
+                  ),
+                  Divider(
+                    color: Colors.white10,
+                    thickness: 1,
+                    height: 1,
+                  ),
+                  DrawerOption(
+                    icon: Icons.notifications,
+                    label: 'Notificações',
+                    routeName: '/notifications',
+                  ),
+                  Divider(
+                    color: Colors.white10,
+                    thickness: 1,
+                    height: 1,
+                  ),
+                  DrawerOption(
+                    icon: Icons.settings,
+                    label: 'Configurações',
+                    routeName: '/settings',
+                  ),
+                  Divider(
+                    color: Colors.white10,
+                    thickness: 1,
+                    height: 1,
+                  ),
+                  DrawerOption(
+                    icon: Icons.exit_to_app,
+                    label: 'Sair',
+                    routeName: '/logout',
+                    isDanger: true,
+                  ),
+                ],
+              ),
+            ),
+
+            // Rodapé fixo
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: Column(
+                children: [
+                  Text(
+                    "DoMoney v1.0.0",
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 12,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: Text(
+                      "Política de Privacidade",
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 12,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Widget para os ícones e informações no cabeçalho
+  Widget _buildInfoRow(String text, {IconData? icon, Color? iconColor}) {
+    final parts = text.split(" "); // Dividir o texto em partes (número e label)
+
+    // Garantir que o texto está no formato esperado
+    if (parts.length < 2) {
+      return Row(
+        children: [
+          Text(
+            text, // Apenas retorna o texto original
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          if (icon != null) ...[
+            const SizedBox(width: 4),
+            Icon(
+              icon,
+              color: iconColor ?? Colors.white,
+              size: 18,
+            ),
+          ],
+        ],
+      );
+    }
+
+    return Row(
+      children: [
+        RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: parts[0], // Parte numérica
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Montserrat',
+                ),
+              ),
+              const TextSpan(text: " "), // Espaço entre número e label
+              TextSpan(
+                text: parts[1], // Parte de texto (exemplo: XP)
+                style: const TextStyle(
+                  color: Colors.orange, // Cor diferente para "XP"
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Montserrat',
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (icon != null) ...[
+          const SizedBox(width: 4),
+          Icon(
+            icon,
+            color: iconColor ?? Colors.white,
+            size: 18,
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+// Classe para opções do Drawer
+class DrawerOption extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String routeName;
+  final bool isDanger;
+
+  const DrawerOption({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.routeName,
+    this.isDanger = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: isDanger ? Colors.redAccent : Colors.white,
+      ),
+      title: Text(
+        label,
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: isDanger ? Colors.redAccent : Colors.white,
+        ),
+      ),
+      onTap: () {
+        Navigator.of(context).pop();
+        Navigator.of(context).pushNamed(routeName);
+      },
+      tileColor: Colors.grey[900],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+      horizontalTitleGap: 12,
+      trailing: const Icon(
+        Icons.arrow_forward_ios,
+        size: 14,
+        color: Colors.white54,
+      ),
+      visualDensity: VisualDensity.compact,
     );
   }
 }
@@ -318,7 +557,7 @@ class ProgressIndicator extends StatelessWidget {
             fontSize: 16,
           ),
         ),
-        const SizedBox(height: 8), // Espaçamento entre o texto e a barra
+        const SizedBox(height: 5), // Espaçamento entre o texto e a barra
         TweenAnimationBuilder<double>(
           tween: Tween<double>(begin: 0.0, end: progress),
           duration: const Duration(seconds: 2), // Tempo da animação
@@ -329,26 +568,33 @@ class ProgressIndicator extends StatelessWidget {
               children: [
                 // Barra de fundo
                 Container(
-                  width: screenWidth * 0.6,
+                  width: screenWidth * 0.75,
                   height: 16,
                   decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 219, 214, 214),
+                    color: const Color(0xFFEBEBEB),
                     borderRadius: BorderRadius.circular(4),
                     boxShadow: const [
                       BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 2,
-                        offset: Offset(0, 1),
+                        color: Colors.black,
+                        blurRadius: 1,
+                        offset: Offset(0, 2),
                       ),
                     ],
                   ),
                 ),
                 // Barra de progresso preenchida
                 Container(
-                  width: screenWidth * 0.6 * value, // Crescimento da esquerda
+                  width: screenWidth * 0.75 * value, // Crescimento da esquerda
                   height: 18,
                   decoration: const BoxDecoration(
-                    color: Colors.orange,
+                    gradient: LinearGradient(
+                      colors: [
+                        Color.fromARGB(255, 243, 159, 32),
+                        Color.fromARGB(255, 228, 143, 15)
+                      ],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
                     borderRadius: BorderRadius.horizontal(
                       left:
                           Radius.circular(4), // Bordas arredondadas à esquerda
@@ -359,7 +605,7 @@ class ProgressIndicator extends StatelessWidget {
                 ),
                 // Texto de porcentagem no centro
                 Padding(
-                  padding: const EdgeInsets.only(left: 90.0),
+                  padding: const EdgeInsets.only(left: 116.0),
                   child: Align(
                     alignment: Alignment.center,
                     child: Text(
@@ -473,53 +719,4 @@ class DynamicBackgroundPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-}
-
-class DrawerOption extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String routeName;
-  final bool isDanger;
-
-  const DrawerOption({
-    super.key,
-    required this.icon,
-    required this.label,
-    required this.routeName,
-    this.isDanger = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(
-        icon,
-        color: isDanger ? Colors.redAccent : Colors.white,
-      ),
-      title: Text(
-        label,
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: isDanger ? Colors.redAccent : Colors.white,
-        ),
-      ),
-      onTap: () {
-        Navigator.of(context).pop();
-        Navigator.of(context).pushNamed(routeName);
-      },
-      tileColor: Colors.grey[900],
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-      horizontalTitleGap: 12,
-      trailing: const Icon(
-        Icons.arrow_forward_ios,
-        size: 14,
-        color: Colors.white54,
-      ),
-      visualDensity: VisualDensity.compact,
-    );
-  }
 }
