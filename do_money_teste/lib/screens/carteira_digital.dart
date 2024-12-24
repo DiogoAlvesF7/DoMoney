@@ -1,6 +1,8 @@
-import 'package:do_money_teste/screens/subscreens/extrato.dart';
-import 'package:do_money_teste/screens/subscreens/grafico_carteira_digital.dart';
-import 'package:do_money_teste/screens/subscreens/grafico_historico.dart';
+import 'package:do_money_teste/screens/subscreens/carteira_digital/corretora.dart';
+import 'package:do_money_teste/screens/subscreens/carteira_digital/extrato.dart';
+import 'package:do_money_teste/screens/subscreens/carteira_digital/grafico_carteira_digital.dart';
+import 'package:do_money_teste/screens/subscreens/carteira_digital/grafico_historico.dart';
+import 'package:do_money_teste/screens/subscreens/carteira_digital/simulador.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -28,7 +30,7 @@ class _CarteiraDigitalPageState extends State<CarteiraDigitalPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -59,11 +61,14 @@ class _CarteiraDigitalPageState extends State<CarteiraDigitalPage>
           unselectedLabelColor: Colors.white70,
           labelStyle: const TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 16,
+            fontSize: 12,
+            fontFamily: 'Montserrat',
           ),
           tabs: const [
             Tab(text: "Início"),
             Tab(text: "Extrato"),
+            Tab(text: "Simulador"),
+            Tab(text: "Corretora"),
           ],
         ),
       ),
@@ -74,6 +79,10 @@ class _CarteiraDigitalPageState extends State<CarteiraDigitalPage>
           _buildInicio(),
           // Página de Extrato
           _buildExtrato(),
+          // Página de Simulador
+          _buildSimulador(),
+          // Página de Corretora
+          _buildCorretora(),
         ],
       ),
     );
@@ -106,11 +115,17 @@ class _CarteiraDigitalPageState extends State<CarteiraDigitalPage>
     );
   }
 
-  // Valor Total da Carteira
-
   // Página de Extrato
   Widget _buildExtrato() {
     return const ExtratoPage();
+  }
+
+  Widget _buildSimulador() {
+    return const SimuladorFinanceiroPage();
+  }
+
+  Widget _buildCorretora() {
+    return const CorretoraPage();
   }
 
   // Valor Total da Carteira com funcionalidade do "olho"
@@ -156,7 +171,7 @@ class _CarteiraDigitalPageState extends State<CarteiraDigitalPage>
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
+              const Divider(color: Colors.white54),
               Text(
                 mostrarValor
                     ? "R\$ ${valorTotalCarteira.toStringAsFixed(2)}"

@@ -1,79 +1,89 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
-class GraficoDespesas extends StatefulWidget {
-  const GraficoDespesas({super.key});
+class GraficoReceitas extends StatefulWidget {
+  const GraficoReceitas({super.key, required Map<String, double> data});
 
   @override
   // ignore: library_private_types_in_public_api
-  _GraficoDespesasState createState() => _GraficoDespesasState();
+  _GraficoReceitasState createState() => _GraficoReceitasState();
 }
 
-class _GraficoDespesasState extends State<GraficoDespesas>
+class _GraficoReceitasState extends State<GraficoReceitas>
     with SingleTickerProviderStateMixin {
   final Map<String, double> segmentos = {
-    "Alimentação": 80.0,
-    "Transporte": 50.0,
-    "Saúde": 100.0,
-    "Educação": 40.0,
-    "Lazer": 30.0,
+    "Salário": 3200.0,
+    "Dividendos": 500.0,
+    "Freelance": 300.0,
   };
 
   String? _segmentoSelecionado;
   double? _valorSegmentoSelecionado;
   late AnimationController _animationController;
   bool _listaExpandida = false;
-  final Map<String, List<Map<String, dynamic>>> _gastos = {
-    "Alimentação": [
+  final Map<String, List<Map<String, dynamic>>> _receitas = {
+    "Salário": [
       {
-        "titulo": "Supermercado",
+        "titulo": "Salário Mensal",
         "data": "01/10/2023",
-        "descricao": "Compra mensal",
-        "valor": 50.0
+        "descricao": "Salário do mês de outubro",
+        "valor": 3200.0
+      },
+    ],
+    "Dividendos": [
+      {
+        "titulo": "Dividendos ITUB4",
+        "data": "10/10/2023",
+        "descricao": "Pagamento de dividendos da ação ITUB4",
+        "valor": 150.0
       },
       {
-        "titulo": "Restaurante",
+        "titulo": "Dividendos VALE3",
+        "data": "15/10/2023",
+        "descricao": "Pagamento de dividendos da ação VALE3",
+        "valor": 200.0
+      },
+    ],
+    "Freelance": [
+      {
+        "titulo": "Projeto de Design",
         "data": "05/10/2023",
-        "descricao": "Almoço",
-        "valor": 30.0
+        "descricao": "Pagamento pelo projeto de design gráfico",
+        "valor": 500.0
+      },
+      {
+        "titulo": "Consultoria",
+        "data": "18/10/2023",
+        "descricao": "Consultoria sobre estratégias de marketing",
+        "valor": 300.0
       },
     ],
-    "Transporte": [
+    "Rendimentos": [
       {
-        "titulo": "Combustível",
-        "data": "03/10/2023",
-        "descricao": "Gasolina",
-        "valor": 50.0
-      },
-    ],
-    "Saúde": [
-      {
-        "titulo": "Farmácia",
-        "data": "02/10/2023",
-        "descricao": "Medicamentos",
+        "titulo": "Rendimento CDB",
+        "data": "20/10/2023",
+        "descricao": "Rendimentos acumulados no CDB",
         "valor": 100.0
       },
-    ],
-    "Educação": [
       {
-        "titulo": "Curso",
-        "data": "04/10/2023",
-        "descricao": "Curso online",
-        "valor": 40.0
+        "titulo": "Rendimento Tesouro Selic",
+        "data": "25/10/2023",
+        "descricao": "Rendimentos acumulados no Tesouro Selic",
+        "valor": 120.0
       },
     ],
-    "Lazer": [
+    "Aluguel": [
       {
-        "titulo": "Cinema",
-        "data": "06/10/2023",
-        "descricao": "Filme",
-        "valor": 30.0
+        "titulo": "Aluguel de Imóvel",
+        "data": "10/10/2023",
+        "descricao": "Recebimento do aluguel do apartamento",
+        "valor": 2000.0
       },
     ],
   };
 
   void _atualizarValorSegmento(String segmento) {
-    final novoValor = _gastos[segmento]!.fold<double>(
+    final novoValor = _receitas[segmento]!.fold<double>(
       0.0,
       (sum, item) => sum + item['valor'],
     );
@@ -86,7 +96,7 @@ class _GraficoDespesasState extends State<GraficoDespesas>
   void _removerSegmento(String segmento) {
     setState(() {
       segmentos.remove(segmento);
-      _gastos.remove(segmento);
+      _receitas.remove(segmento);
       _segmentoSelecionado = null; // Limpa seleção após remoção
       _valorSegmentoSelecionado = null;
     });
@@ -128,14 +138,14 @@ class _GraficoDespesasState extends State<GraficoDespesas>
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text("Esse segmento já existe."),
-                        backgroundColor: Colors.red,
+                        backgroundColor: Colors.green,
                       ),
                     );
                   } else {
                     // Adiciona o novo segmento
                     setState(() {
                       segmentos[novoNome!] = 0.0; // Inicializa com valor 0
-                      _gastos[novoNome!] = []; // Cria uma lista vazia
+                      _receitas[novoNome!] = []; // Cria uma lista vazia
                     });
                     Navigator.of(context).pop();
                   }
@@ -143,7 +153,7 @@ class _GraficoDespesasState extends State<GraficoDespesas>
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text("O nome do segmento não pode estar vazio."),
-                      backgroundColor: Colors.red,
+                      backgroundColor: Colors.green,
                     ),
                   );
                 }
@@ -206,7 +216,7 @@ class _GraficoDespesasState extends State<GraficoDespesas>
 
                 setState(() {
                   // Adiciona o item ao segmento
-                  _gastos[segmento]?.add({
+                  _receitas[segmento]?.add({
                     "titulo": titulo,
                     "descricao": descricao,
                     "valor": valor,
@@ -228,7 +238,7 @@ class _GraficoDespesasState extends State<GraficoDespesas>
   }
 
   void _editarItem(String segmento, int index) {
-    final item = _gastos[segmento]![index];
+    final item = _receitas[segmento]![index];
 
     final TextEditingController tituloController =
         TextEditingController(text: item['titulo']);
@@ -297,15 +307,11 @@ class _GraficoDespesasState extends State<GraficoDespesas>
 
   void _removerItem(String segmento, int index) {
     setState(() {
-      _gastos[segmento]?.removeAt(index);
+      _receitas[segmento]?.removeAt(index);
 
       // Atualiza o valor do segmento
       _atualizarValorSegmento(segmento);
     });
-  }
-
-  double get _valorTotal {
-    return segmentos.values.fold(0.0, (sum, value) => sum + value);
   }
 
   @override
@@ -326,11 +332,11 @@ class _GraficoDespesasState extends State<GraficoDespesas>
   @override
   Widget build(BuildContext context) {
     final double total = segmentos.values.reduce((a, b) => a + b);
-    const double centerRadius = 75.0; // Vão central mais destacado
-    const double sliceRadius = 45.0; // Casca mais fina
+    const double centerRadius = 85.0; // Vão central mais destacado
+    const double sliceRadius = 40.0; // Casca mais fina
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.black,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
@@ -343,6 +349,7 @@ class _GraficoDespesasState extends State<GraficoDespesas>
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
+                    color: Colors.white,
                   ),
                 ),
                 Text(
@@ -350,7 +357,7 @@ class _GraficoDespesasState extends State<GraficoDespesas>
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.redAccent,
+                    color: Colors.greenAccent,
                   ),
                 ),
 
@@ -409,13 +416,13 @@ class _GraficoDespesasState extends State<GraficoDespesas>
 
                             return PieChartSectionData(
                               color: isSelected
-                                  ? Colors.red[700]
-                                  : Colors.red[300],
+                                  ? Colors.green[600]
+                                  : Colors.green[400],
                               value: displayValue.toDouble(),
                               title:
                                   "${((entry.value / total) * 100).toStringAsFixed(1)}%",
                               radius:
-                                  isSelected ? sliceRadius + 10 : sliceRadius,
+                                  isSelected ? sliceRadius + 8 : sliceRadius,
                               titleStyle: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
@@ -470,23 +477,24 @@ class _GraficoDespesasState extends State<GraficoDespesas>
                           builder: (context, child) {
                             return Column(
                               mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
                                   _segmentoSelecionado ?? "Clique no gráfico",
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.black54,
+                                    color: Colors.white54,
                                   ),
                                 ),
                                 const SizedBox(height: 8),
                                 if (_segmentoSelecionado != null)
                                   Text(
-                                    "Total: R\$ ${_valorSegmentoSelecionado?.toStringAsFixed(2) ?? "0.00"}",
+                                    "R\$ ${_valorSegmentoSelecionado?.toStringAsFixed(2) ?? "0.00"}",
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.black,
+                                      color: Colors.white,
                                     ),
                                   ),
                               ],
@@ -497,6 +505,7 @@ class _GraficoDespesasState extends State<GraficoDespesas>
                     ],
                   ),
                 ),
+                const SizedBox(height: 18),
                 GestureDetector(
                   onTap: () {
                     setState(() {
@@ -509,8 +518,8 @@ class _GraficoDespesasState extends State<GraficoDespesas>
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     decoration: BoxDecoration(
                       color: _listaExpandida
-                          ? Colors.red.shade800
-                          : Colors.red.shade800,
+                          ? Colors.green.shade800
+                          : Colors.green.shade800,
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
@@ -550,7 +559,7 @@ class _GraficoDespesasState extends State<GraficoDespesas>
                   ),
                 ),
 
-                // Lista de Gastos
+                // Lista de receitas
                 if (_listaExpandida && _segmentoSelecionado != null) ...[
                   ElevatedButton.icon(
                     onPressed: _segmentoSelecionado != null
@@ -566,98 +575,102 @@ class _GraficoDespesasState extends State<GraficoDespesas>
                     icon: const Icon(Icons.add),
                     label: const Text("Adicionar Item"),
                   ),
+                  const SizedBox(height: 8),
                   ListView.builder(
-                    shrinkWrap: true, // Permite rolagem dentro da Column
-                    physics:
-                        const NeverScrollableScrollPhysics(), // Evita rolagem independente
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: _segmentoSelecionado != null
-                        ? _gastos[_segmentoSelecionado]!.length
+                        ? _receitas[_segmentoSelecionado]!.length
                         : 0,
                     itemBuilder: (context, index) {
-                      final item = _gastos[_segmentoSelecionado]![index];
-                      return Card(
+                      final item = _receitas[_segmentoSelecionado]![index];
+                      return Container(
                         margin: const EdgeInsets.symmetric(
                             vertical: 8, horizontal: 8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[900],
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 8,
+                              offset: const Offset(2, 4),
+                            ),
+                          ],
                         ),
-                        elevation: 4,
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              // Informações do Item
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Título
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          item['titulo'],
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            IconButton(
-                                              iconSize: 18,
-                                              onPressed: () => _editarItem(
-                                                  _segmentoSelecionado!, index),
-                                              icon: const Icon(Icons.edit,
-                                                  color: Colors.orange),
-                                              tooltip: "Editar Item",
-                                            ),
-                                            // Botão de remover
-                                            IconButton(
-                                              iconSize: 18,
-                                              onPressed: () => _removerItem(
-                                                  _segmentoSelecionado!, index),
-                                              icon: const Icon(Icons.delete,
-                                                  color: Colors.red),
-                                              tooltip: "Remover Item",
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Título e Valor
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // Título
+                                Expanded(
+                                  child: Text(
+                                    item['titulo'],
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: Colors.white,
                                     ),
-                                    const SizedBox(height: 4),
-
-                                    // Data e Descrição
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          '${item['data']} - ${item['descricao']}',
-                                          style: const TextStyle(
-                                            fontSize: 10,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                        Text(
-                                          'R\$ ${item['valor'].toStringAsFixed(2)}',
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12,
-                                            color: Colors.red,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                  ),
                                 ),
+                                // Valor
+                                Text(
+                                  'R\$ ${item['valor'].toStringAsFixed(2)}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: item['valor'] > 0
+                                        ? Colors.white
+                                        : Colors.greenAccent,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+
+                            // Data e Descrição
+                            Text(
+                              '${item['data']} - ${item['descricao']}',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.white70,
                               ),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(height: 8),
+                            const Divider(color: Colors.white12, thickness: 1),
+                            // Botões de Ação
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                // Botão Editar
+                                TextButton.icon(
+                                  onPressed: () =>
+                                      _editarItem(_segmentoSelecionado!, index),
+                                  icon: const Icon(Icons.edit,
+                                      color: Colors.amber, size: 18),
+                                  label: const Text(
+                                    'Editar',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                // Botão Remover
+                                TextButton.icon(
+                                  onPressed: () => _removerItem(
+                                      _segmentoSelecionado!, index),
+                                  icon: const Icon(Icons.delete,
+                                      color: Colors.red, size: 18),
+                                  label: const Text(
+                                    'Remover',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       );
                     },

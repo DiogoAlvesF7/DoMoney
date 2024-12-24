@@ -1,9 +1,9 @@
-import 'package:do_money_teste/screens/domoney_simulation.dart';
+import 'package:do_money_teste/screens/subscreens/home_page/domoney_simulation.dart';
 import 'package:flutter/material.dart';
-import 'package:do_money_teste/screens/subscreens/predio_domoney.dart';
+import 'package:do_money_teste/screens/subscreens/home_page/predio_domoney.dart';
 import 'package:do_money_teste/screens/carteira_digital.dart';
 import 'package:do_money_teste/screens/perfil.dart';
-import 'subscreens/balanco_financeiro.dart';
+import 'balanco_financeiro.dart';
 import 'noticias.dart';
 
 class HomePage extends StatefulWidget {

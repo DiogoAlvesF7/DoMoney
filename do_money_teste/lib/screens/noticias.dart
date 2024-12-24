@@ -1,6 +1,5 @@
 import 'dart:async';
-
-import 'package:do_money_teste/screens/subscreens/filtro_noticias.dart';
+import 'package:do_money_teste/screens/subscreens/noticias/filtro_noticias.dart';
 import 'package:flutter/material.dart';
 
 class NoticiasPage extends StatefulWidget {
@@ -19,10 +18,10 @@ class _NoticiasPageState extends State<NoticiasPage> {
     "Mercado"
   ];
 
-  late PageController _pageController; // Instância do PageController
+  late PageController _pageController;
   int _currentPage = 0;
 
-  String categoriaSelecionada = "Economia"; // Apenas uma categoria selecionada
+  String categoriaSelecionada = "Economia";
 
   final List<Map<String, dynamic>> todasNoticias = [
     {
@@ -149,16 +148,14 @@ class _NoticiasPageState extends State<NoticiasPage> {
     },
   ];
 
-  Timer? _timer; // Timer para rotação automática do carrossel
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
 
-    // Configura o Timer para alternar automaticamente as páginas
     _timer = Timer.periodic(const Duration(seconds: 4), (timer) {
-      // Avança para a próxima página
       if (_pageController.hasClients) {
         setState(() {
           _currentPage = (_currentPage + 1) % todasNoticias.length;
@@ -174,15 +171,14 @@ class _NoticiasPageState extends State<NoticiasPage> {
 
   @override
   void dispose() {
-    _timer?.cancel(); // Cancela o Timer ao sair
-    _pageController.dispose(); // Libera o controlador
+    _timer?.cancel();
+    _pageController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
       appBar: AppBar(
         title: const Text(
           "Notícias",
@@ -207,7 +203,6 @@ class _NoticiasPageState extends State<NoticiasPage> {
                 ),
               ),
             );
-
             if (resultado != null && resultado is String) {
               setState(() {
                 categoriaSelecionada = resultado;
@@ -216,39 +211,34 @@ class _NoticiasPageState extends State<NoticiasPage> {
           },
         ),
       ),
+      backgroundColor: Colors.black,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16),
-
-            // Carrossel de Destaques
             _buildCarrosselDestaques(),
-
-            const SizedBox(height: 24.0),
-
-            // Filtro de Categorias
+            const SizedBox(height: 24),
             _buildFiltroCategorias(),
-
             const SizedBox(height: 16),
-
-            // Lista de Notícias Filtradas
             _buildSectionTitle("Mais relevantes para você"),
             _buildListaNoticias(),
+            const SizedBox(height: 16),
+            _buildSectionTitle("Todas as notícias"),
+            const SizedBox(height: 16),
           ],
         ),
       ),
     );
   }
 
-  // Carrossel de Destaques
   Widget _buildCarrosselDestaques() {
     return SizedBox(
-      height: 150, // Altura maior para um visual mais imponente
+      height: 170,
       child: PageView.builder(
-        controller: _pageController, // Associa o controlador
+        controller: _pageController,
         itemCount: todasNoticias.length,
-        physics: const BouncingScrollPhysics(), // Animação suave ao final
+        physics: const BouncingScrollPhysics(),
         itemBuilder: (context, index) {
           final noticia = todasNoticias[index];
           return Container(
@@ -262,7 +252,7 @@ class _NoticiasPageState extends State<NoticiasPage> {
               boxShadow: const [
                 BoxShadow(
                   color: Colors.black26,
-                  blurRadius: 8,
+                  blurRadius: 10,
                   offset: Offset(0, 4),
                 ),
               ],
@@ -282,7 +272,6 @@ class _NoticiasPageState extends State<NoticiasPage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Título com sombra
                   Text(
                     noticia["titulo"],
                     maxLines: 2,
@@ -291,17 +280,9 @@ class _NoticiasPageState extends State<NoticiasPage> {
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black38,
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
                     ),
                   ),
                   const SizedBox(height: 6),
-                  // Fonte e tempo
                   Text(
                     "${noticia["fonte"]} • ${noticia["tempo"]}",
                     style: const TextStyle(
@@ -318,7 +299,6 @@ class _NoticiasPageState extends State<NoticiasPage> {
     );
   }
 
-  // Filtro de Categorias
   Widget _buildFiltroCategorias() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -337,14 +317,14 @@ class _NoticiasPageState extends State<NoticiasPage> {
               margin: const EdgeInsets.only(right: 8),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: BoxDecoration(
-                color: isSelected ? Colors.black : Colors.white,
+                color: isSelected ? Colors.orange : Colors.grey[800],
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: isSelected
                     ? [
-                        const BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 6,
-                          offset: Offset(0, 2),
+                        BoxShadow(
+                          color: Colors.orange.withOpacity(0.4),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
                         ),
                       ]
                     : [],
@@ -352,7 +332,7 @@ class _NoticiasPageState extends State<NoticiasPage> {
               child: Text(
                 categoria,
                 style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.black87,
+                  color: isSelected ? Colors.black : Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
                 ),
@@ -364,7 +344,6 @@ class _NoticiasPageState extends State<NoticiasPage> {
     );
   }
 
-  // Lista de Notícias Filtradas
   Widget _buildListaNoticias() {
     final noticiasFiltradas = todasNoticias.where((noticia) {
       return noticia["categoria"] == categoriaSelecionada;
@@ -377,26 +356,23 @@ class _NoticiasPageState extends State<NoticiasPage> {
       itemBuilder: (context, index) {
         final noticia = noticiasFiltradas[index];
         return GestureDetector(
-          onTap: () {
-            // Ação ao clicar no card
-          },
+          onTap: () {},
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.grey[900],
               borderRadius: BorderRadius.circular(12),
               boxShadow: const [
                 BoxShadow(
-                  color: Colors.black12,
+                  color: Colors.black26,
                   blurRadius: 6,
-                  offset: Offset(0, 2),
+                  offset: Offset(0, 4),
                 ),
               ],
             ),
             child: Row(
               children: [
-                // Imagem com bordas arredondadas
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Image.network(
@@ -407,7 +383,6 @@ class _NoticiasPageState extends State<NoticiasPage> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                // Conteúdo da notícia
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -419,7 +394,7 @@ class _NoticiasPageState extends State<NoticiasPage> {
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: Colors.black87,
+                          color: Colors.white,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -449,7 +424,7 @@ class _NoticiasPageState extends State<NoticiasPage> {
         style: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
-          color: Colors.black87,
+          color: Colors.white,
         ),
       ),
     );

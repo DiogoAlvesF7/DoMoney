@@ -33,7 +33,7 @@ class HistoricoProgresso extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          Divider(color: Colors.white70),
+          Divider(color: Colors.white24),
           const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -58,6 +58,7 @@ class HistoricoProgresso extends StatelessWidget {
                   ),
                 ],
               ),
+              VerticalDivider(color: Colors.white70),
               Column(
                 children: [
                   const Text(
@@ -129,7 +130,7 @@ class HistoricoProgresso extends StatelessWidget {
                   lineBarsData: [
                     LineChartBarData(
                       spots: pontosHistorico,
-                      isCurved: true,
+                      isCurved: false,
                       color: Colors.orange,
                       belowBarData: BarAreaData(
                         show: true,
