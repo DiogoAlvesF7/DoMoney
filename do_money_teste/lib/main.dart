@@ -1,3 +1,4 @@
+import 'package:do_money_teste/screens/menu/notificacoesficticias.dart';
 import 'package:do_money_teste/screens/welcome.dart';
 import 'package:do_money_teste/screens/menu/configuracoes.dart';
 import 'package:do_money_teste/screens/menu/notificacoes.dart';
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
         '/about': (context) => const AboutPage(),
         '/notifications': (context) => const NotificationsPage(),
         '/welcome': (context) => const WelcomePage(),
+        '/notificacoes': (context) => const NotificacoesPage(),
       },
     );
   }

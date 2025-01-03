@@ -56,6 +56,7 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.black,
         title: const Text(
           "Perfil",
@@ -90,10 +91,19 @@ class ProfilePage extends StatelessWidget {
           children: [
             // Identidade do Usuário
             _buildProfileHeader(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 12),
 
-            // Estatísticas do Usuário
-            _buildUserStats(),
+            const Divider(color: Colors.white10, thickness: 1, height: 1),
+            const SizedBox(height: 24),
+            const UserStatisticsWidget(
+              totalXP: 22487,
+              totalBalance: 30509.04,
+              totalInvested: 27509.00,
+              totalEarnings: 42305.05,
+              totalAchievements: 7,
+              materialsStudied: 3,
+              overallPerformance: 92.0,
+            ),
             const SizedBox(height: 24),
             const Divider(color: Colors.white10, thickness: 1, height: 1),
             const SizedBox(height: 24),
@@ -122,6 +132,10 @@ class ProfilePage extends StatelessWidget {
             _buildFriends(),
 
             // Conquistas
+            const SizedBox(height: 24),
+            const Divider(color: Colors.white10, thickness: 1, height: 1),
+            const SizedBox(height: 24),
+            const UserStreakWidget(),
             const SizedBox(height: 24),
             const Divider(color: Colors.white10, thickness: 1, height: 1),
             const SizedBox(height: 24),
@@ -215,6 +229,7 @@ class ProfilePage extends StatelessWidget {
             alignment: Alignment.bottomRight,
             children: [
               CircleAvatar(
+                backgroundColor: Colors.black,
                 radius: 50,
                 backgroundImage: AssetImage(
                     "assets/images/Captura de tela 2024-12-18 093558.png"),
@@ -264,49 +279,24 @@ class ProfilePage extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           const Text(
-            "1285 XP até CEO", // Texto explicativo sobre o próximo cargo
+            "22487 / 30000 XP para CEO", // Texto explicativo sobre o próximo cargo
             style: TextStyle(
               fontSize: 12,
               color: Colors.white70,
             ),
           ),
+          const Padding(
+            padding: EdgeInsets.only(top: 16.0),
+            child: Text(
+              "Membro desde 2023", // Data de entrada na plataforma
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.white70,
+              ),
+            ),
+          ),
         ],
       ),
-    );
-  }
-
-  // Estatísticas do Usuário
-  Widget _buildUserStats() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _buildStatItem("R\$ 30.509,04", "Saldo"),
-        _buildStatItem("7", "Conquistas"),
-        _buildStatItem("5", "Amigos"),
-      ],
-    );
-  }
-
-  Widget _buildStatItem(String value, String label) {
-    return Column(
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.white70,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-      ],
     );
   }
 
@@ -421,9 +411,9 @@ class ProfilePage extends StatelessWidget {
                         fontWeight: FontWeight.bold),
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 const Padding(
-                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                  padding: EdgeInsets.only(left: 6.0, right: 6.0),
                   child:
                       Divider(color: Colors.white10, thickness: 1, height: 1),
                 ),
@@ -633,16 +623,20 @@ class ProfilePage extends StatelessWidget {
                 Stack(
                   children: [
                     CircleAvatar(
+                      backgroundColor: Colors.black,
                       radius: 30,
                       backgroundImage: AssetImage(friend['profileImage']),
                     ),
                     Positioned(
                       bottom: 0,
                       right: 0,
-                      child: CircleAvatar(
-                        radius: 8,
-                        backgroundColor:
-                            friend['isOnline'] ? Colors.green : Colors.grey,
+                      child: Tooltip(
+                        message: friend['isOnline'] ? 'Online' : 'Offline',
+                        child: CircleAvatar(
+                          radius: 8,
+                          backgroundColor:
+                              friend['isOnline'] ? Colors.green : Colors.grey,
+                        ),
                       ),
                     ),
                   ],
@@ -695,21 +689,269 @@ class ProfilePage extends StatelessWidget {
   }
 }
 
-class EditProfilePageSimple extends StatelessWidget {
-  const EditProfilePageSimple({super.key});
+class UserStreakWidget extends StatelessWidget {
+  final int loggedDays; // Número de dias logados
+  const UserStreakWidget({super.key, this.loggedDays = 3});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Editar Perfil"),
-        backgroundColor: Colors.black,
-      ),
-      body: const Center(
-        child: Text(
-          "Página de edição de perfil",
-          style: TextStyle(color: Colors.white),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Título e ícone
+        Row(
+          children: [
+            const Text(
+              "Ofensiva",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(
+              Icons.local_fire_department,
+              color: Colors.orange[600],
+              size: 24,
+            ),
+          ],
         ),
+        const SizedBox(height: 8),
+
+        // Dias logados
+        Text(
+          "$loggedDays dias seguidos",
+          style: const TextStyle(
+            color: Colors.white54,
+            fontSize: 14,
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        // Dias de ofensiva
+        _buildStreakDays(),
+
+        const SizedBox(height: 24),
+
+        // Recompensas
+        const Text(
+          "Recompensas",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16),
+        _buildRewardCard(
+          title: "Bônus de XP 🧠",
+          description: "Receba +50 XP após 3 dias de ofensiva.",
+          isClaimed: loggedDays >= 3,
+        ),
+        _buildRewardCard(
+          title: "Pequeno bônus 💰",
+          description: "Ganhe \$50 ao completar 7 dias de ofensiva.",
+          isClaimed: loggedDays >= 7,
+        ),
+        _buildRewardCard(
+          title: "Nova conquista 🏆",
+          description: "Desbloqueie uma conquista ao completar 14 dias.",
+          isClaimed: loggedDays >= 14,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStreakDays() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: List.generate(7, (index) {
+        bool isCompleted = index < loggedDays; // Dias logados
+        return Column(
+          children: [
+            Text(
+              ["D", "S", "T", "Q", "Q", "S", "S"][index],
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 4),
+            CircleAvatar(
+              radius: 18,
+              backgroundColor:
+                  isCompleted ? Colors.orange[600] : Colors.grey[700],
+              child: isCompleted
+                  ? const Icon(
+                      Icons.check,
+                      color: Colors.white,
+                      size: 16,
+                    )
+                  : null,
+            ),
+          ],
+        );
+      }),
+    );
+  }
+
+  Widget _buildRewardCard({
+    required String title,
+    required String description,
+    required bool isClaimed,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isClaimed ? Colors.green[600] : Colors.grey[850],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isClaimed ? Colors.green : Colors.grey[700]!,
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            isClaimed ? Icons.check_circle : Icons.lock,
+            color: isClaimed ? Colors.white : Colors.grey[500],
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  description,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.white54,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class UserStatisticsWidget extends StatelessWidget {
+  final double totalBalance; // Saldo total
+  final int totalXP; // XP acumulado
+  final double totalInvested; // Valor investido
+  final double totalEarnings; // Rendimentos totais
+  final int totalAchievements; // Conquistas desbloqueadas
+  final int materialsStudied; // Materiais estudados
+  final int streakDays; // Dias em ofensiva
+  final double overallPerformance; // Aproveitamento geral (%)
+
+  const UserStatisticsWidget({
+    super.key,
+    this.totalBalance = 1500.0,
+    this.totalXP = 3200,
+    this.totalInvested = 500.0,
+    this.totalEarnings = 80.0,
+    this.totalAchievements = 12,
+    this.materialsStudied = 24,
+    this.streakDays = 15,
+    this.overallPerformance = 88.5,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Estatísticas do Usuário",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16),
+        _buildStatRow(
+          icon: Icons.stars,
+          title: "XP Acumulado",
+          value: "$totalXP XP",
+        ),
+        _buildStatRow(
+          icon: Icons.account_balance_wallet,
+          title: "Saldo Total",
+          value: "R\$ ${totalBalance.toStringAsFixed(2)}",
+        ),
+        _buildStatRow(
+          icon: Icons.attach_money,
+          title: "Valor Investido",
+          value: "R\$ ${totalInvested.toStringAsFixed(2)}",
+        ),
+        _buildStatRow(
+          icon: Icons.trending_up,
+          title: "Rendimentos Totais",
+          value: "R\$ ${totalEarnings.toStringAsFixed(2)}",
+        ),
+        _buildStatRow(
+          icon: Icons.menu_book,
+          title: "Módulos concluídos",
+          value: "$materialsStudied",
+        ),
+        _buildStatRow(
+          icon: Icons.percent,
+          title: "Aproveitamento Geral",
+          value: "${overallPerformance.toStringAsFixed(1)}%",
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatRow({
+    required IconData icon,
+    required String title,
+    required String value,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 20,
+            backgroundColor: Colors.orange,
+            child: Icon(icon, color: Colors.white, size: 20),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -749,6 +991,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: Tooltip(
+          message: 'Voltar',
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
         title: const Text(
           "Editar Perfil",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),

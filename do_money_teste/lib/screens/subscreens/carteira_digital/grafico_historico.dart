@@ -156,37 +156,24 @@ class HistoricoProgresso extends StatelessWidget {
           ),
 
           const SizedBox(height: 12),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildResumoHistorico(
-      IconData icon, String value, String label, Color color) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Icon(icon, color: color, size: 16),
-            const SizedBox(width: 4),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: color,
+          ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.orange,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
-          ],
-        ),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 10,
-            color: Colors.white70,
+            child: const Padding(
+              padding: EdgeInsets.only(left: 8.0, right: 8.0),
+              child: Text("Ver histórico completo",
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

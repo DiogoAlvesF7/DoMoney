@@ -56,6 +56,7 @@ class _BalancoFinanceiroState extends State<BalancoFinanceiro> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Balanço Financeiro',
           style: TextStyle(

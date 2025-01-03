@@ -8,6 +8,16 @@ class NotificationsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: Tooltip(
+          message: 'Voltar',
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
         backgroundColor: Colors.black,
         title: const Text(
           "Notificações",
@@ -35,7 +45,7 @@ class NotificationsPage extends StatelessWidget {
 
           // Notificações de Notícias
           _buildSwitchOption(
-            title: "Notícias Financeiras",
+            title: "Novas Notícias",
             description:
                 "Receba alertas sobre as principais notícias relacionadas ao universo financeiro.",
             value: true,
@@ -82,7 +92,7 @@ class NotificationsPage extends StatelessWidget {
           const SizedBox(height: 16),
           ElevatedButton.icon(
             onPressed: () {
-              // Ação ao clicar no botão
+              Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.orange,

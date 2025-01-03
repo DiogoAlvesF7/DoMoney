@@ -1,3 +1,4 @@
+import 'package:do_money_teste/screens/subscreens/home_page/materiais_didaticos.dart';
 import 'package:flutter/material.dart';
 
 class PredioDoMoneyPage extends StatefulWidget {
@@ -9,15 +10,27 @@ class PredioDoMoneyPage extends StatefulWidget {
 
 class _PredioDoMoneyPageState extends State<PredioDoMoneyPage> {
   final List<Map<String, dynamic>> _modulos = [
-    {"icone": Icons.lightbulb, "titulo": "Introdução", "progresso": 1.0},
+    {
+      "icone": Icons.info_outline_rounded,
+      "titulo": "Introdução",
+      "progresso": 1.0
+    },
     {
       "icone": Icons.monetization_on,
       "titulo": "Gestão de Gastos",
       "progresso": 0.6
     },
     {"icone": Icons.bar_chart, "titulo": "Investimentos", "progresso": 0.3},
-    {"icone": Icons.insights, "titulo": "Planejamento", "progresso": 0.1},
-    {"icone": Icons.sim_card, "titulo": "Simulação Avançada", "progresso": 0.0},
+    {
+      "icone": Icons.calendar_month_outlined,
+      "titulo": "Planejamento",
+      "progresso": 0.1
+    },
+    {
+      "icone": Icons.account_balance,
+      "titulo": "Construção de Riqueza",
+      "progresso": 0.0
+    },
   ];
 
   int _selectedModulo = -1;
@@ -167,7 +180,13 @@ class _PredioDoMoneyPageState extends State<PredioDoMoneyPage> {
             leading: const Icon(Icons.book, color: Colors.orange),
             title: const Text("Materiais Didáticos"),
             onTap: () {
-              // Abrir página de materiais didáticos
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      MateriaisDidaticosPage(moduloTitulo: modulo["titulo"]),
+                ),
+              );
             },
           ),
           ListTile(
@@ -194,7 +213,8 @@ class _PredioDoMoneyPageState extends State<PredioDoMoneyPage> {
                 LinearProgressIndicator(
                   value: modulo["progresso"],
                   backgroundColor: Colors.grey[300],
-                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.orange),
+                  valueColor:
+                      const AlwaysStoppedAnimation<Color>(Colors.orange),
                 ),
                 const SizedBox(height: 8),
                 Text(

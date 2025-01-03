@@ -267,15 +267,15 @@ class CustomDrawer extends StatelessWidget {
                     const SizedBox(height: 4),
                     // Indicadores em colunas
                     Padding(
-                      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                      padding: const EdgeInsets.only(left: 2.0, right: 2.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           _buildInfoRow("30.509,04",
                               icon: Icons.attach_money,
                               iconColor: Colors.green), // Saldo
                           _buildInfoRow(
-                            "1200 XP",
+                            "22.487 XP",
                           ), // XP
                           _buildInfoRow(
                             "7",
@@ -311,7 +311,7 @@ class CustomDrawer extends StatelessWidget {
                   DrawerOption(
                     icon: Icons.notifications,
                     label: 'Notificações',
-                    routeName: '/notifications',
+                    routeName: '/notificacoes',
                   ),
                   Divider(
                     color: Colors.white10,

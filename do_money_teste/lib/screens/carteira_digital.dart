@@ -44,6 +44,7 @@ class _CarteiraDigitalPageState extends State<CarteiraDigitalPage>
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           "Carteira Digital",
           style: TextStyle(

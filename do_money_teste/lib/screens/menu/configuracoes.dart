@@ -8,6 +8,16 @@ class SettingsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: Tooltip(
+          message: 'Voltar',
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
         backgroundColor: Colors.black,
         title: const Text(
           "Configurações",
@@ -92,12 +102,12 @@ class SettingsPage extends StatelessWidget {
           // Sobre o App
           _buildListTileOption(
             context: context,
-            title: "Sobre o DoMoney",
-            description: "Saiba mais sobre o DoMoney.",
-            icon: Icons.info_outline,
+            title: "Notificações",
+            description: "Gerencie o que deseja ser notificado.",
+            icon: Icons.notifications,
             onTap: () {
               // Abrir página "Sobre"
-              Navigator.of(context).pushNamed('/about');
+              Navigator.of(context).pushNamed('/notifications');
             },
           ),
 
