@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
     const CarteiraDigitalPage(),
     const _HomePageContent(), // Conteúdo da Home
     const NoticiasPage(),
-    const ProfilePage(),
+    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
@@ -271,22 +271,22 @@ class CustomDrawer extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          _buildInfoRow("30.509,04",
+                              icon: Icons.attach_money,
+                              iconColor: Colors.green), // Saldo
                           _buildInfoRow(
                             "1200 XP",
                           ), // XP
                           _buildInfoRow(
-                            "37",
+                            "7",
                             icon: Icons.emoji_events,
                             iconColor: Colors.amber,
                           ), // Conquistas
                           _buildInfoRow(
-                            "3",
-                            icon: Icons.checklist_rtl_sharp,
+                            "5",
+                            icon: Icons.group,
                             iconColor: Colors.grey[600],
-                          ), //Metas
-                          _buildInfoRow("30.509,04",
-                              icon: Icons.attach_money,
-                              iconColor: Colors.green), // Saldo
+                          ), //Amigos
                         ],
                       ),
                     ),
@@ -388,11 +388,11 @@ class CustomDrawer extends StatelessWidget {
             ),
           ),
           if (icon != null) ...[
-            const SizedBox(width: 4),
+            const SizedBox(width: 2),
             Icon(
               icon,
               color: iconColor ?? Colors.white,
-              size: 18,
+              size: 20,
             ),
           ],
         ],

@@ -304,7 +304,7 @@ class _WelcomePageState extends State<WelcomePage> {
           ),
           SizedBox(height: 4),
           Text(
-            "Gerencie suas finanças com facilidade e eficiência.",
+            "Aprenda, invista e cresça com a gente.",
             style: TextStyle(
                 fontSize: 11, color: Colors.white, letterSpacing: 0.5),
           ),

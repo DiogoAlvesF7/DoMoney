@@ -133,7 +133,7 @@ class _PredioDoMoneyPageState extends State<PredioDoMoneyPage> {
         ),
         ClipRect(
           clipper: _HalfStarClipper(progresso / threshold),
-          child: Icon(
+          child: const Icon(
             Icons.star,
             size: 20,
             color: Colors.yellow, // Preenchimento da estrela
@@ -149,7 +149,7 @@ class _PredioDoMoneyPageState extends State<PredioDoMoneyPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DrawerHeader(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.orange,
             ),
             child: Center(
@@ -194,7 +194,7 @@ class _PredioDoMoneyPageState extends State<PredioDoMoneyPage> {
                 LinearProgressIndicator(
                   value: modulo["progresso"],
                   backgroundColor: Colors.grey[300],
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.orange),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -288,7 +288,7 @@ class ModuleButton extends StatelessWidget {
                         : const Color.fromARGB(255, 238, 214, 3),
                     shadows: [
                       Shadow(
-                        offset: Offset(2, 2),
+                        offset: const Offset(2, 2),
                         blurRadius: 1,
                         color: Colors.black.withOpacity(0.6),
                       ),

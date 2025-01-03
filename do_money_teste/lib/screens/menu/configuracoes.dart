@@ -107,18 +107,17 @@ class SettingsPage extends StatelessWidget {
           const SizedBox(height: 16),
           ElevatedButton.icon(
             onPressed: () {
-              Navigator.of(context).pushNamed('/logout');
+              Navigator.of(context).pushNamed('/');
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.redAccent,
+              backgroundColor: Colors.orange,
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            icon: const Icon(Icons.exit_to_app, color: Colors.white),
             label: const Text(
-              "Sair do DoMoney",
+              "Salvar e Sair",
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,

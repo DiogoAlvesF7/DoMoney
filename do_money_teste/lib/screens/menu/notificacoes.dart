@@ -93,7 +93,7 @@ class NotificationsPage extends StatelessWidget {
             ),
             icon: const Icon(Icons.notifications_active, color: Colors.white),
             label: const Text(
-              "Configurações Avançadas",
+              "Salvar Preferências",
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,

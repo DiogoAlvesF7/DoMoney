@@ -39,9 +39,9 @@ class MyApp extends StatelessWidget {
       initialRoute: '/welcome',
       routes: {
         '/': (context) => const HomePage(),
-        '/perfil': (context) => const ProfilePage(),
+        '/perfil': (context) => ProfilePage(),
         '/artigos': (context) => const NoticiasPage(),
-        '/carteira_digital': (context) => CarteiraDigitalPage(),
+        '/carteira_digital': (context) => const CarteiraDigitalPage(),
         '/logout': (context) => const LogoutPage(),
         '/settings': (context) => const SettingsPage(),
         '/about': (context) => const AboutPage(),
