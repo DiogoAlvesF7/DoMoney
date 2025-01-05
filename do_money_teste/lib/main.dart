@@ -1,4 +1,6 @@
 import 'package:do_money_teste/screens/menu/notificacoesficticias.dart';
+import 'package:do_money_teste/screens/quizzes/quiz.dart';
+import 'package:do_money_teste/screens/subscreens/home_page/materiais_didaticos.dart';
 import 'package:do_money_teste/screens/welcome.dart';
 import 'package:do_money_teste/screens/menu/configuracoes.dart';
 import 'package:do_money_teste/screens/menu/notificacoes.dart';
@@ -49,6 +51,8 @@ class MyApp extends StatelessWidget {
         '/notifications': (context) => const NotificationsPage(),
         '/welcome': (context) => const WelcomePage(),
         '/notificacoes': (context) => const NotificacoesPage(),
+        '/quiz': (context) => const QuizPage(),
+        '/materialdidatico': (context) => const Modulo1Page(),
       },
     );
   }

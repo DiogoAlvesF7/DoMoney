@@ -271,7 +271,7 @@ class CustomDrawer extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          _buildInfoRow("30.509,04",
+                          _buildInfoRow("300.509,04",
                               icon: Icons.attach_money,
                               iconColor: Colors.green), // Saldo
                           _buildInfoRow(

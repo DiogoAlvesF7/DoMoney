@@ -48,189 +48,209 @@ class _PredioDoMoneyPageState extends State<PredioDoMoneyPage> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Prédio DoMoney",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.orange,
-        centerTitle: true,
-      ),
-      endDrawer: _selectedModulo != -1
-          ? _buildModuleDrawer(_modulos[_selectedModulo])
-          : null,
-      body: Builder(
-        builder: (ctx) => Row(
-          children: [
-            // Prédio na lateral esquerda
-            Image.asset(
-              'assets/images/Captura de tela 2024-12-18 210631.png',
-              width: screenWidth * 0.35,
-              height: screenHeight,
-              fit: BoxFit.cover,
+        appBar: AppBar(
+          leading: Tooltip(
+            message: 'Voltar',
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
-            // Caminho de conquistas
+          ),
+          title: const Text(
+            "Prédio DoMoney",
+            style: TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+          backgroundColor: Colors.orange,
+          centerTitle: true,
+        ),
+        endDrawer: _selectedModulo != -1
+            ? _buildModuleDrawer(context, _modulos[_selectedModulo])
+            : null,
+        body: Column(
+          children: [
+            const UserInfo(
+                xp: 22487,
+                dinheiro: 300509.04,
+                cargoAtual: 'Sócio Sênior',
+                proximoCargo: 'CEO',
+                Salario: 35000),
+            const SizedBox(height: 8),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ListView.builder(
-                  itemCount: _modulos.length,
-                  itemBuilder: (context, index) {
-                    final modulo = _modulos[index];
-                    return Align(
-                      alignment: index.isEven
-                          ? Alignment.centerLeft
-                          : Alignment.centerRight,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // Título do módulo
-                          Container(
-                            constraints: const BoxConstraints(maxWidth: 120),
-                            child: Text(
-                              modulo['titulo'],
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          // Botão do módulo
-                          Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              ModuleButton(
-                                icon: modulo['icone'],
-                                onTap: () => _abrirDrawer(ctx, index),
-                              ),
-                              // Estrelas abaixo
-                              Positioned(
-                                bottom: -25,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: List.generate(3, (starIndex) {
-                                    final double threshold =
-                                        (modulo["progresso"] / 3.0) *
-                                            (starIndex + 1);
-                                    return _buildStar(
-                                        threshold, modulo["progresso"]);
-                                  }),
+              child: Row(
+                children: [
+                  // Prédio na lateral esquerda
+                  Image.asset(
+                    'assets/images/Captura de tela 2024-12-18 210631.png',
+                    width: screenWidth * 0.35,
+                    height: screenHeight,
+                    fit: BoxFit.cover,
+                  ),
+                  // Caminho de conquistas
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: ListView.builder(
+                        itemCount: _modulos.length,
+                        itemBuilder: (context, index) {
+                          final modulo = _modulos[index];
+                          return Align(
+                            alignment: index.isEven
+                                ? Alignment.centerLeft
+                                : Alignment.centerRight,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                // Título do módulo
+                                Container(
+                                  constraints:
+                                      const BoxConstraints(maxWidth: 120),
+                                  child: Text(
+                                    modulo['titulo'],
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 40),
-                        ],
+                                const SizedBox(height: 8),
+                                // Botão do módulo
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    ModuleButton(
+                                      icon: modulo['icone'],
+                                      onTap: () => _abrirDrawer(context, index),
+                                    ),
+                                    // Estrelas abaixo
+                                    Positioned(
+                                      bottom: -25,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: List.generate(3, (starIndex) {
+                                          final double threshold =
+                                              (modulo["progresso"] / 3.0) *
+                                                  (starIndex + 1);
+                                          return _buildStar(
+                                              threshold, modulo["progresso"]);
+                                        }),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 40),
+                              ],
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
-        ),
-      ),
-    );
+        ));
   }
+}
 
-  Widget _buildStar(double threshold, double progresso) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Icon(
+Widget _buildStar(double threshold, double progresso) {
+  return Stack(
+    alignment: Alignment.center,
+    children: [
+      Icon(
+        Icons.star,
+        size: 20,
+        color: Colors.grey[300], // Fundo da estrela
+      ),
+      ClipRect(
+        clipper: _HalfStarClipper(progresso / threshold),
+        child: const Icon(
           Icons.star,
           size: 20,
-          color: Colors.grey[300], // Fundo da estrela
+          color: Colors.yellow, // Preenchimento da estrela
         ),
-        ClipRect(
-          clipper: _HalfStarClipper(progresso / threshold),
-          child: const Icon(
-            Icons.star,
-            size: 20,
-            color: Colors.yellow, // Preenchimento da estrela
-          ),
-        ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
 
-  Widget _buildModuleDrawer(Map<String, dynamic> modulo) {
-    return Drawer(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          DrawerHeader(
-            decoration: const BoxDecoration(
-              color: Colors.orange,
-            ),
-            child: Center(
-              child: Text(
-                modulo["titulo"],
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+Widget _buildModuleDrawer(BuildContext context, Map<String, dynamic> modulo) {
+  return Drawer(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        DrawerHeader(
+          decoration: const BoxDecoration(
+            color: Colors.orange,
+          ),
+          child: Center(
+            child: Text(
+              modulo["titulo"],
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.book, color: Colors.orange),
-            title: const Text("Materiais Didáticos"),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      MateriaisDidaticosPage(moduloTitulo: modulo["titulo"]),
+        ),
+        ListTile(
+          leading: const Icon(Icons.book, color: Colors.orange),
+          title: const Text("Materiais Didáticos"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Modulo1Page(),
+              ),
+            );
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.quiz, color: Colors.orange),
+          title: const Text("Quizzes"),
+          onTap: () {
+            Navigator.pushNamed(context, '/quiz');
+          },
+        ),
+        const Divider(),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Progresso",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
-              );
-            },
+              ),
+              const SizedBox(height: 8),
+              LinearProgressIndicator(
+                value: modulo["progresso"],
+                backgroundColor: Colors.grey[300],
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.orange),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                "Concluído: ${(modulo["progresso"] * 100).toInt()}%",
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+              ),
+            ],
           ),
-          ListTile(
-            leading: const Icon(Icons.quiz, color: Colors.orange),
-            title: const Text("Quizzes"),
-            onTap: () {
-              // Abrir página de quizzes
-            },
-          ),
-          const Divider(),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Progresso",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                LinearProgressIndicator(
-                  value: modulo["progresso"],
-                  backgroundColor: Colors.grey[300],
-                  valueColor:
-                      const AlwaysStoppedAnimation<Color>(Colors.orange),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  "Concluído: ${(modulo["progresso"] * 100).toInt()}%",
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }
 
 class ModuleButton extends StatelessWidget {
@@ -363,4 +383,156 @@ class ButtonShadowPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class UserInfo extends StatelessWidget {
+  final int xp;
+  final double dinheiro;
+  final String cargoAtual;
+  final String proximoCargo;
+  final double Salario;
+
+  const UserInfo({
+    super.key,
+    required this.xp,
+    required this.dinheiro,
+    required this.cargoAtual,
+    required this.proximoCargo,
+    required this.Salario,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // XP e Fortuna
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    '$xp',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  const Text(
+                    "XP",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.amber,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  const Text(
+                    'Fortuna:',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Icon(
+                    Icons.attach_money,
+                    color: Colors.green[700],
+                    size: 24,
+                  ),
+                  Text(
+                    dinheiro.toStringAsFixed(2),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Divider(color: Colors.grey[300], thickness: 1),
+          const SizedBox(height: 12),
+          // Detalhes do Cargo
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.work, color: Colors.black, size: 20),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Cargo Atual: $cargoAtual',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  const Text(
+                    'Salário: ',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const Icon(
+                    Icons.attach_money,
+                    color: Colors.black,
+                    size: 16,
+                  ),
+                  Expanded(
+                    child: Text(
+                      Salario.toStringAsFixed(2),
+                      style: const TextStyle(fontSize: 14, color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Próximo Cargo: $proximoCargo',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
