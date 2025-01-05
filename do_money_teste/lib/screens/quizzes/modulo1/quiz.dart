@@ -1,6 +1,6 @@
 // ignore_for_file: unnecessary_const
 
-import 'package:do_money_teste/screens/quizzes/quiz_exemplo.dart';
+import 'package:do_money_teste/screens/quizzes/modulo1/quiz_exemplo.dart';
 import 'package:flutter/material.dart';
 
 class QuizPage extends StatefulWidget {
@@ -14,53 +14,23 @@ class _QuizPageState extends State<QuizPage> {
   final List<Quiz> quizzes = [
     Quiz(
       title: "Educação Financeira",
-      questions: [
-        Question(
-          questionText: "O que é educação financeira?",
-          options: [
-            "Planejar viagens",
-            "Gerenciar dinheiro",
-            "Comprar ações",
-            "Economizar energia"
-          ],
-          correctOptionIndex: 1,
-        ),
-        Question(
-          questionText: "Qual a regra do método 50/30/20?",
-          options: [
-            "50% gastos essenciais",
-            "30% lazer",
-            "20% poupança/investimentos",
-            "Todas as alternativas"
-          ],
-          correctOptionIndex: 3,
-        ),
-        Question(
-          questionText: "O que significa receita?",
-          options: ["Gasto", "Dinheiro recebido", "Poupança", "Investimento"],
-          correctOptionIndex: 1,
-        ),
-        Question(
-          questionText: "Como juros compostos funcionam?",
-          options: [
-            "Juros sobre o valor principal",
-            "Juros sobre juros acumulados",
-            "Juros fixos",
-            "Nenhuma das opções"
-          ],
-          correctOptionIndex: 1,
-        ),
-        Question(
-          questionText: "O que define planejamento financeiro de longo prazo?",
-          options: [
-            "Objetivos de 1 mês",
-            "Objetivos de até 1 ano",
-            "Objetivos acima de 5 anos",
-            "Nenhuma das alternativas"
-          ],
-          correctOptionIndex: 2,
-        ),
-      ],
+      questions: [],
+    ),
+    Quiz(
+      title: "Orçamento",
+      questions: [],
+    ),
+    Quiz(
+      title: "Crédito",
+      questions: [],
+    ),
+    Quiz(
+      title: "Impostos",
+      questions: [],
+    ),
+    Quiz(
+      title: "Previdência",
+      questions: [],
     ),
     // Outros quizzes podem ser adicionados aqui.
   ];
@@ -90,12 +60,15 @@ class _QuizPageState extends State<QuizPage> {
         padding: const EdgeInsets.all(16),
         itemCount: quizzes.length,
         itemBuilder: (context, index) {
-          return QuizCard(
-            title: quizzes[index].title,
-            description:
-                "Teste seus conhecimentos sobre \n         educação financeira.",
-            questionCount: quizzes[index].questions.length,
-            difficulty: "Fácil",
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: QuizCard(
+              title: quizzes[index].title,
+              description:
+                  "Teste seus conhecimentos sobre ${quizzes[index].title.toLowerCase()}",
+              questionCount: 15,
+              difficulty: "Fácil",
+            ),
           );
         },
       ),

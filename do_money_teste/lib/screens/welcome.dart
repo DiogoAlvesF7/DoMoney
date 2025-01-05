@@ -203,7 +203,13 @@ class _WelcomePageState extends State<WelcomePage> {
           MouseRegion(
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PasswordRecoveryPage()),
+                );
+              },
               child: const Text(
                 "Esqueci minha senha",
                 style: TextStyle(
@@ -406,5 +412,84 @@ class LineChartPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return false;
+  }
+}
+
+class PasswordRecoveryPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Recuperar Senha",
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white)),
+        backgroundColor: Colors.orange,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              "Informe o email associado à sua conta para recuperar a senha.",
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              decoration: InputDecoration(
+                labelText: "Email",
+                prefixIcon: const Icon(Icons.email, color: Colors.orange),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: const Padding(
+                        padding: EdgeInsets.only(top: 8.0),
+                        child: Text(
+                            "Um email foi enviado para o endereço fornecido. Por favor, siga os passos do email para recuperar a senha."),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                          ),
+                          child: const Text("OK",
+                              style: TextStyle(color: Colors.white)),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                minimumSize: const Size(double.infinity, 50),
+              ),
+              child: const Text(
+                "Recuperar Senha",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

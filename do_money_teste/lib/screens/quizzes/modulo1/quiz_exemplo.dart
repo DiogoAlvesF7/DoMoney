@@ -645,24 +645,81 @@ class QuizResultScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            Center(
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 16.0, horizontal: 24.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      // Ação ao clicar no botão
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) => Container(
+                          padding: const EdgeInsets.all(16.0),
+                          child: const Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Center(
+                                child: Text(
+                                  "Respostas do Quiz",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.orange),
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 16.0, horizontal: 24.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(Icons.checklist, color: Colors.white),
+                      label: const Text(
+                        "Ver Respostas",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
+                    ),
                   ),
                 ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: const Icon(Icons.turn_left_outlined, color: Colors.white),
-                label: const Text(
-                  "Voltar ao Início",
+              ],
+            ),
+            Spacer(),
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange,
+                padding: const EdgeInsets.symmetric(
+                    vertical: 16.0, horizontal: 24.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(Icons.arrow_back_ios,
+                  color: Colors.white, size: 20),
+              label: const Padding(
+                padding: EdgeInsets.only(left: 4),
+                child: Text(
+                  "Início",
                   style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
                 ),

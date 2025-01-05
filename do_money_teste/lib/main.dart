@@ -1,5 +1,5 @@
 import 'package:do_money_teste/screens/menu/notificacoesficticias.dart';
-import 'package:do_money_teste/screens/quizzes/quiz.dart';
+import 'package:do_money_teste/screens/quizzes/modulo1/quiz.dart';
 import 'package:do_money_teste/screens/subscreens/home_page/materiais_didaticos.dart';
 import 'package:do_money_teste/screens/welcome.dart';
 import 'package:do_money_teste/screens/menu/configuracoes.dart';
